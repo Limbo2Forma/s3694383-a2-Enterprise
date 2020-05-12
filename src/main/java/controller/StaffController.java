@@ -27,13 +27,15 @@ public class StaffController {
     public int addStaff(@RequestBody Staff staff){ return staffStore.addStaff(staff); }
 
     @DeleteMapping(path = "/{staffId}")
-    public void deleteStaff(@PathVariable int staffId){
+    public String deleteStaff(@PathVariable int staffId){
         staffStore.deleteStaff(staffId);
+        return "deleted Staff with id: " + staffId;
     }
 
     @PutMapping(path = "")
-    public void updateStaff(@RequestBody Staff staff){
+    public String updateStaff(@RequestBody Staff staff){
         staffStore.updateStaff(staff);
+        return "updated Staff with id: " + staff.getId();
     }
 
     @GetMapping(path ="/name/{name}")

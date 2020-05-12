@@ -48,6 +48,7 @@ public class InvoiceService {
 
         invoice.setTotalPrice(totalPrice);
         invoice.setInvoiceDetails(invoiceDetailList);
+        invoice.setId(importedNoteId);
 
         sessionFactory.getCurrentSession().save(invoice);
         return invoice.getId();
@@ -122,25 +123,5 @@ public class InvoiceService {
                 "from InvoiceDetail as p where p.invoice.id =:invoiceId");
         query.setParameter("invoiceId",invoiceId);
         return query.list();
-    }
-
-    public int addInvoiceDetail(InvoiceDetail invoiceDetail){
-        sessionFactory.getCurrentSession().save(invoiceDetail);
-        return invoiceDetail.getId();
-    }
-
-    public void updateInvoiceDetail(InvoiceDetail invoiceDetail){
-        sessionFactory.getCurrentSession().update(invoiceDetail);
-    }
-
-    public void deleteInvoiceDetail(int invoiceDetailId){
-        InvoiceDetail invoiceDetail = sessionFactory.getCurrentSession().get(InvoiceDetail.class, invoiceDetailId);
-        Invoice order = invoiceDetail.getInvoice();
-        List<InvoiceDetail> updatedList = order.getInvoiceDetails();
-        updatedList.remove(invoiceDetail);
-        order.setInvoiceDetails(updatedList);
-
-        sessionFactory.getCurrentSession().update(order);
-        sessionFactory.getCurrentSession().delete(invoiceDetail);
     }
 }

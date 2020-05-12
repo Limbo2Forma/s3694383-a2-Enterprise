@@ -26,6 +26,11 @@ public class DeliveryNoteDetail {
 
     public DeliveryNoteDetail() { }
 
+    public DeliveryNoteDetail(@NotNull Product product, @NotNull int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }

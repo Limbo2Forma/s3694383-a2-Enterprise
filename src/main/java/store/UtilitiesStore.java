@@ -37,4 +37,6 @@ public class UtilitiesStore {
     public List<Inventory> getInventoriesByDate(Date date) {
         return utilitiesService.getInventoriesByDate(date);
     }
+
+    public void refreshDatabase() { utilitiesService.refreshDatabase();}
 }

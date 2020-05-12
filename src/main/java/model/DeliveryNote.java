@@ -36,6 +36,13 @@ public class DeliveryNote {
 
     public DeliveryNote() { }
 
+    public DeliveryNote(int id,@NotNull @PastOrPresent Date date, @NotNull Staff staff, List<DeliveryNoteDetail> deliveryNoteDetails) {
+        this.id = id;
+        this.date = date;
+        this.staff = staff;
+        this.deliveryNoteDetails = deliveryNoteDetails;
+    }
+
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }

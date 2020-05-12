@@ -36,13 +36,15 @@ public class ProviderOrderController {
     public int addOrder(@RequestBody ProviderOrder providerOrder){ return providerOrderStore.addOrder(providerOrder); }
 
     @DeleteMapping(path = "/{orderId}")
-    public void deleteOrder(@PathVariable int orderId){
+    public String deleteOrder(@PathVariable int orderId){
         providerOrderStore.deleteOrder(orderId);
+        return "deleted Order and its details with id: " + orderId;
     }
 
     @PutMapping(path = "")
-    public void updateOrder(@RequestBody ProviderOrder providerOrder){
+    public String updateOrder(@RequestBody ProviderOrder providerOrder){
         providerOrderStore.updateOrder(providerOrder);
+        return "updated Order and its details with id: " + providerOrder.getId();
     }
 
     @GetMapping(path = "/provider/{providerId}")
@@ -80,8 +82,15 @@ public class ProviderOrderController {
     public int addOrderDetail(@RequestBody ProviderOrderDetail providerOrderDetail){ return providerOrderStore.addOrderDetail(providerOrderDetail); }
 
     @PutMapping(path = "/detail")
-    public void updateOrderDetail(@RequestBody ProviderOrderDetail providerOrderDetail){ providerOrderStore.updateOrderDetail(providerOrderDetail); }
+    public String updateOrderDetail(@RequestBody ProviderOrderDetail providerOrderDetail){
+        providerOrderStore.updateOrderDetail(providerOrderDetail);
+        return "updated Order Detail with id: " + providerOrderDetail.getId()
+                + " from Order with id: " + providerOrderDetail.getProviderOrder().getId();
+    }
 
     @DeleteMapping(path = "/detail/{orderDetailId}")
-    public void deleteOrderDetail(@PathVariable int orderDetailId){ providerOrderStore.deleteOrderDetail(orderDetailId); }
+    public String deleteOrderDetail(@PathVariable int orderDetailId){
+        int detailFrom = providerOrderStore.deleteOrderDetail(orderDetailId);
+        return "updated Order Detail with id: " + orderDetailId + " from Order with id: " + detailFrom;
+    }
 }

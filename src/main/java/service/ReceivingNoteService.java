@@ -40,6 +40,9 @@ public class ReceivingNoteService {
             r.setId(od.getId());
             r.setReceivingNote(receivingNote);
             noteDetailList.add(r);
+            Product p = sessionFactory.getCurrentSession().get(Product.class, od.getProduct().getId());
+            p.setCurrentQuantity(p.getCurrentQuantity() + od.getQuantity());
+            sessionFactory.getCurrentSession().update(p);
         }
 
         receivingNote.setReceivingNoteDetails(noteDetailList);

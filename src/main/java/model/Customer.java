@@ -37,6 +37,16 @@ public class Customer {
 
     public Customer() { }
 
+    public Customer(int id, @NotBlank String name, @NotBlank String address, @NotBlank String phone, String fax, @NotBlank @Email String email, @NotBlank String contact) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.fax = fax;
+        this.email = email;
+        this.contact = contact;
+    }
+
     public int getId() {
         return id;
     }

@@ -148,7 +148,7 @@ public class DeliveryNoteService {
         }
     }
 
-    public void deleteDeliveryNoteDetail(int deliveryNoteDetailId){
+    public int deleteDeliveryNoteDetail(int deliveryNoteDetailId){
 
         DeliveryNoteDetail detail = sessionFactory.getCurrentSession().get(DeliveryNoteDetail.class, deliveryNoteDetailId);
 
@@ -173,11 +173,14 @@ public class DeliveryNoteService {
         sessionFactory.getCurrentSession().update(product);
 
         DeliveryNote note = detail.getDeliveryNote();
+        int detailFrom = note.getId();
         List<DeliveryNoteDetail> updatedList = note.getDeliveryNoteDetails();
         updatedList.remove(detail);
         note.setDeliveryNoteDetails(updatedList);
 
         sessionFactory.getCurrentSession().update(note);
         sessionFactory.getCurrentSession().delete(detail);
+
+        return detailFrom;
     }
 }

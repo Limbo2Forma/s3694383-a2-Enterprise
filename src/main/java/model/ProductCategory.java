@@ -20,6 +20,11 @@ public class ProductCategory {
 
     public ProductCategory() { }
 
+    public ProductCategory(int id, @NotBlank String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

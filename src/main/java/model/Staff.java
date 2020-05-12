@@ -30,6 +30,14 @@ public class Staff {
 
     public Staff() { }
 
+    public Staff(int id, @NotBlank String name, @NotBlank String address, @NotBlank String phone, @NotBlank @Email String email) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+    }
+
     public int getId() {
         return id;
     }

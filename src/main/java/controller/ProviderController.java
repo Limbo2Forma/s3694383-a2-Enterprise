@@ -25,10 +25,16 @@ public class ProviderController {
     public int addProvider(@RequestBody Provider provider){ return providerStore.addProvider(provider); }
 
     @DeleteMapping(path = "/{providerId}")
-    public void deleteProvider(@PathVariable int providerId){ providerStore.deleteProvider(providerId); }
+    public String deleteProvider(@PathVariable int providerId){
+        providerStore.deleteProvider(providerId);
+        return "deleted Provider with id: " + providerId;
+    }
 
     @PutMapping(path = "")
-    public void updateProvider(@RequestBody Provider provider){ providerStore.updateProvider(provider); }
+    public String updateProvider(@RequestBody Provider provider){
+        providerStore.updateProvider(provider);
+        return "updated Provider with id: " + provider.getId();
+    }
 
     @GetMapping(path ="/name/{name}")
     public List<Provider> getProviderByName(@PathVariable String name){ return providerStore.getProviderByName(name); }

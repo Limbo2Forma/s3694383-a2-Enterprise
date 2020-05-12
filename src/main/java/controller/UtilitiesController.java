@@ -19,7 +19,10 @@ public class UtilitiesController {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
     private UtilitiesStore utilitiesStore;
     @Autowired
-    public void setUtilitiesStore(UtilitiesStore utilitiesStore) { this.utilitiesStore = utilitiesStore; }
+    public void setUtilitiesStore(UtilitiesStore utilitiesStore) {
+        this.utilitiesStore = utilitiesStore;
+        utilitiesStore.refreshDatabase();
+    }
 
     @GetMapping(path = "/revenue/from/{from}/to/{to}")
     public Long revenueFromTo(

@@ -36,12 +36,14 @@ public class DeliveryNoteController {
     public int addDeliveryNote(@RequestBody DeliveryNote deliveryNote){ return deliveryNoteStore.addDeliveryNote(deliveryNote); }
 
     @DeleteMapping(path = "/{deliveryNoteId}")
-    public void deleteDeliveryNote(@PathVariable int deliveryNoteId){
+    public String deleteDeliveryNote(@PathVariable int deliveryNoteId){
         deliveryNoteStore.deleteDeliveryNote(deliveryNoteId);
+        return "deleted Delivery Note and its details with id: " + deliveryNoteId;
     }
     @PutMapping(path = "")
-    public void updateDeliveryNote(@RequestBody DeliveryNote deliveryNote){
+    public String updateDeliveryNote(@RequestBody DeliveryNote deliveryNote){
         deliveryNoteStore.updateDeliveryNote(deliveryNote);
+        return "deleted Delivery Note and its details with id: " + deliveryNote.getId();
     }
     @GetMapping(path = "/date/{date}")
     public List<DeliveryNote> getDeliveryNoteByDate(@PathVariable @DateTimeFormat(pattern = dateFormat) String date){
@@ -78,12 +80,16 @@ public class DeliveryNoteController {
     }
 
     @PutMapping(path = "/detail")
-    public void updateDeliveryNoteDetail(@RequestBody DeliveryNoteDetail providerDeliveryNoteDetail){
+    public String updateDeliveryNoteDetail(@RequestBody DeliveryNoteDetail providerDeliveryNoteDetail){
         deliveryNoteStore.updateDeliveryNoteDetail(providerDeliveryNoteDetail);
+        return "updated Delivery Note Detail with id: " + providerDeliveryNoteDetail.getId()
+                + " from Delivery Note with id: " + providerDeliveryNoteDetail.getDeliveryNote().getId();
     }
 
     @DeleteMapping(path = "/detail/{deliveryNoteDetailId}")
-    public void deleteDeliveryNoteDetail(@PathVariable int deliveryNoteDetailId){
-        deliveryNoteStore.deleteDeliveryNoteDetail(deliveryNoteDetailId);
+    public String deleteDeliveryNoteDetail(@PathVariable int deliveryNoteDetailId){
+        int detailFrom = deliveryNoteStore.deleteDeliveryNoteDetail(deliveryNoteDetailId);
+        return "updated Delivery Note Detail with id: " + deliveryNoteDetailId
+                + " from Delivery Note with id: " + detailFrom;
     }
 }

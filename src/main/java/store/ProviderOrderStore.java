@@ -63,7 +63,7 @@ public class ProviderOrderStore {
         providerOrderService.updateOrderDetail(providerOrderDetail);
     }
 
-    public void deleteOrderDetail(int orderDetailId){
-        providerOrderService.deleteOrderDetail(orderDetailId);
+    public int deleteOrderDetail(int orderDetailId){
+        return providerOrderService.deleteOrderDetail(orderDetailId);
     }
 }

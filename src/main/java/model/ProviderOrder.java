@@ -40,6 +40,14 @@ public class ProviderOrder {
 
     public ProviderOrder() { }
 
+    public ProviderOrder(int id, @PastOrPresent @NotNull Date date, @NotNull Staff staff, @NotNull Provider provider, List<ProviderOrderDetail> providerOrderDetails) {
+        this.id = id;
+        this.date = date;
+        this.staff = staff;
+        this.provider = provider;
+        this.providerOrderDetails = providerOrderDetails;
+    }
+
     public int getId() {
         return id;
     }

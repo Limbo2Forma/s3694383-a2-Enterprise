@@ -13,9 +13,7 @@ import java.util.List;
 public class CustomerController {
     private CustomerStore customerStore;
     @Autowired
-    public void setCustomerStore(CustomerStore customerStore) {
-        this.customerStore = customerStore;
-    }
+    public void setCustomerStore(CustomerStore customerStore) { this.customerStore = customerStore; }
 
     @GetMapping(path="")
     public List<Customer> getAllCustomers() {
@@ -29,13 +27,15 @@ public class CustomerController {
     public int addCustomer(@RequestBody Customer customer){ return customerStore.addCustomer(customer); }
 
     @DeleteMapping(path = "/{customerId}")
-    public void deleteCustomer(@PathVariable int customerId){
+    public String deleteCustomer(@PathVariable int customerId){
         customerStore.deleteCustomer(customerId);
+        return "deleted customer with id: " + customerId;
     }
 
     @PutMapping(path = "")
-    public void updateCustomer(@RequestBody Customer customer){
+    public String updateCustomer(@RequestBody Customer customer){
         customerStore.updateCustomer(customer);
+        return "updated customer with id: " + customer.getId();
     }
 
     @GetMapping(path ="/name/{name}")

@@ -59,7 +59,7 @@ public class DeliveryNoteStore {
         deliveryNoteService.updateDeliveryNoteDetail(deliveryNoteDetail);
     }
 
-    public void deleteDeliveryNoteDetail(int deliveryNoteDetailId){
-        deliveryNoteService.deleteDeliveryNoteDetail(deliveryNoteDetailId);
+    public int deleteDeliveryNoteDetail(int deliveryNoteDetailId){
+        return deliveryNoteService.deleteDeliveryNoteDetail(deliveryNoteDetailId);
     }
 }

@@ -40,13 +40,15 @@ public class InvoiceController {
     }
 
     @DeleteMapping(path = "/{invoiceId}")
-    public void deleteInvoice(@PathVariable int invoiceId){
+    public String deleteInvoice(@PathVariable int invoiceId){
         invoiceStore.deleteInvoice(invoiceId);
+        return "delete Invoice and its details with id: " + invoiceId;
     }
 
     @PutMapping(path = "")
-    public void updateInvoice(@RequestBody Invoice invoice){
+    public String updateInvoice(@RequestBody Invoice invoice){
         invoiceStore.updateInvoice(invoice);
+        return "updated invoice with id: " + invoice.getId();
     }
 
     @GetMapping(path = "/customer/{customerId}")
@@ -127,17 +129,4 @@ public class InvoiceController {
     public List<InvoiceDetail> getInvoiceDetailByInvoiceId(@PathVariable  int invoiceId){
         return invoiceStore.getInvoiceDetailByInvoiceId(invoiceId);
     }
-
-    @PostMapping(path = "/detail")
-    public int addInvoiceDetail(@RequestBody InvoiceDetail providerInvoiceDetail){
-        return invoiceStore.addInvoiceDetail(providerInvoiceDetail);
-    }
-
-    @PutMapping(path = "/detail")
-    public void updateInvoiceDetail(@RequestBody InvoiceDetail providerInvoiceDetail){
-        invoiceStore.updateInvoiceDetail(providerInvoiceDetail);
-    }
-
-    @DeleteMapping(path = "/detail/{invoiceDetailId}")
-    public void deleteInvoiceDetail(@PathVariable int invoiceDetailId){ invoiceStore.deleteInvoiceDetail(invoiceDetailId); }
 }

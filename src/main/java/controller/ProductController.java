@@ -28,10 +28,16 @@ public class ProductController {
     public int addProduct(@RequestBody Product product) { return productStore.addProduct(product); }
 
     @PutMapping(path="")
-    public void updateProduct(@RequestBody Product product) { productStore.updateProduct(product); }
+    public String updateProduct(@RequestBody Product product) {
+        productStore.updateProduct(product);
+        return "updated Product with id: " + product.getId();
+    }
 
     @DeleteMapping(path="/{productId}")
-    public void deleteProduct(@PathVariable int productId) { productStore.deleteProduct(productId); }
+    public String deleteProduct(@PathVariable int productId) {
+        productStore.deleteProduct(productId);
+        return "deleted Product with id: " + productId;
+    }
 
     @GetMapping(path="/name/{productName}")
     public List<Product> getProductByName(@PathVariable String productName) { return productStore.getProductByName(productName); }

@@ -44,6 +44,12 @@ public class Invoice {
 
     public Invoice() { }
 
+    public Invoice(@PastOrPresent @NotNull Date date, @NotNull Staff staff, @NotNull Customer customer) {
+        this.date = date;
+        this.staff = staff;
+        this.customer = customer;
+    }
+
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }

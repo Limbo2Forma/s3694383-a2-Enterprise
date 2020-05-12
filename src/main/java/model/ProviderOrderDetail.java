@@ -29,6 +29,12 @@ public class ProviderOrderDetail {
 
     public ProviderOrderDetail() { }
 
+    public ProviderOrderDetail(@NotNull Product product, @NotNull int price, @NotNull int quantity) {
+        this.product = product;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
     public int getId() {
         return id;
     }

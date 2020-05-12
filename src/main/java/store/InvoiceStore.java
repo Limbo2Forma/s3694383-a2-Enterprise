@@ -64,12 +64,4 @@ public class InvoiceStore {
     public List<InvoiceDetail> getInvoiceDetailByInvoiceId(int invoiceId){
         return invoiceService.getInvoiceDetailByInvoiceId(invoiceId);
     }
-
-    public int addInvoiceDetail(InvoiceDetail invoiceDetail){ return invoiceService.addInvoiceDetail(invoiceDetail); }
-
-    public void updateInvoiceDetail(InvoiceDetail invoiceDetail){ invoiceService.updateInvoiceDetail(invoiceDetail); }
-
-    public void deleteInvoiceDetail(int invoiceDetailId){
-        invoiceService.deleteInvoiceDetail(invoiceDetailId);
-    }
 }

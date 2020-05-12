@@ -28,13 +28,8 @@ public class ProviderOrderService {
     }
 
     public int addOrder(ProviderOrder providerOrder){
-        for (ProviderOrderDetail providerOrderDetail : providerOrder.getProviderOrderDetails()) {
+        for (ProviderOrderDetail providerOrderDetail : providerOrder.getProviderOrderDetails())
             providerOrderDetail.setProviderOrder(providerOrder);
-            Product p = sessionFactory.getCurrentSession().get(Product.class, providerOrderDetail.getProduct().getId());
-            p.setCurrentQuantity(p.getCurrentQuantity() + providerOrderDetail.getQuantity());
-
-            sessionFactory.getCurrentSession().update(p);
-        }
         sessionFactory.getCurrentSession().save(providerOrder);
         return providerOrder.getId();
     }
@@ -133,12 +128,13 @@ public class ProviderOrderService {
 
     }
 
-    public void deleteOrderDetail(int orderDetailId){
+    public int deleteOrderDetail(int orderDetailId){
         ProviderOrderDetail oldDetail = sessionFactory.getCurrentSession().get(ProviderOrderDetail.class, orderDetailId);
         Product product = oldDetail.getProduct();
         product.setCurrentQuantity(product.getCurrentQuantity() - oldDetail.getQuantity());
 
         ProviderOrder order = oldDetail.getProviderOrder();
+        int detailFrom = order.getId();
         List<ProviderOrderDetail> updatedList = order.getProviderOrderDetails();
         updatedList.remove(oldDetail);
         order.setProviderOrderDetails(updatedList);
@@ -159,5 +155,7 @@ public class ProviderOrderService {
 
         sessionFactory.getCurrentSession().update(order);
         sessionFactory.getCurrentSession().delete(oldDetail);
+
+        return detailFrom;
     }
 }

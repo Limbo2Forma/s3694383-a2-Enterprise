@@ -49,6 +49,17 @@ public class Product {
 
     public Product() { }
 
+    public Product(int id, @NotBlank String name, @NotBlank String model, @NotBlank String brand, @NotBlank String company, @NotBlank String description, @NotNull ProductCategory productCategory, @NotNull @Positive int singlePrice) {
+        this.id = id;
+        this.name = name;
+        this.model = model;
+        this.brand = brand;
+        this.company = company;
+        this.description = description;
+        this.productCategory = productCategory;
+        this.singlePrice = singlePrice;
+    }
+
     public int getId() {
         return id;
     }

@@ -39,12 +39,14 @@ public class ReceivingNoteController {
     }
 
     @DeleteMapping(path = "/{receivingNoteId}")
-    public void deleteReceivingNote(@PathVariable int receivingNoteId){
+    public String deleteReceivingNote(@PathVariable int receivingNoteId){
         receivingNoteStore.deleteReceivingNote(receivingNoteId);
+        return "deleted Receiving Note and its details with id: " + receivingNoteId;
     }
     @PutMapping(path = "")
-    public void updateReceivingNote(@RequestBody ReceivingNote receivingNote){
+    public String updateReceivingNote(@RequestBody ReceivingNote receivingNote){
         receivingNoteStore.updateReceivingNote(receivingNote);
+        return "updated Receiving Note and its details with id: " + receivingNote.getId();
     }
     @GetMapping(path = "/date/{date}")
     public List<ReceivingNote> getReceivingNoteByDate(@PathVariable @DateTimeFormat(pattern = dateFormat) String date){

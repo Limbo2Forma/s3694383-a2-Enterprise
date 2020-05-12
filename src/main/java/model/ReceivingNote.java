@@ -35,6 +35,11 @@ public class ReceivingNote {
 
     public ReceivingNote() { }
 
+    public ReceivingNote(@NotNull @PastOrPresent Date date, @NotNull Staff staff) {
+        this.date = date;
+        this.staff = staff;
+    }
+
     public int getId() {
         return id;
     }
