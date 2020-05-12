@@ -19,8 +19,8 @@ public class InvoiceStore {
         this.invoiceService = invoiceService;
     }
 
-    public List<Invoice> getAllInvoices(){
-        return invoiceService.getAllInvoices();
+    public List<Invoice> getAllInvoices(int page){
+        return invoiceService.getAllInvoices(page);
     }
 
     public Invoice getInvoiceById(int invoiceId){
@@ -39,26 +39,26 @@ public class InvoiceStore {
         invoiceService.deleteInvoice(invoiceId);
     }
 
-    public List<Invoice> getInvoicesByCustomer(int customerId){ return invoiceService.getInvoicesByCustomer(customerId); }
+    public List<Invoice> getInvoicesByCustomer(int customerId, int page){ return invoiceService.getInvoicesByCustomer(customerId, page); }
 
-    public List<Invoice> getInvoicesByDate(Date date){
-        return invoiceService.getInvoicesByDate(date);
+    public List<Invoice> getInvoicesByDate(Date date, int page){
+        return invoiceService.getInvoicesByDate(date, page);
     }
 
-    public List<Invoice> getInvoicesFromTo(Date fromDate, Date toDate){
-        return invoiceService.getInvoicesFromTo(fromDate, toDate);
+    public List<Invoice> getInvoicesFromTo(Date fromDate, Date toDate, int page){
+        return invoiceService.getInvoicesFromTo(fromDate, toDate, page);
     }
 
-    public List<Invoice> getInvoicesCustomerFromTo(int customerId, Date fromDate, Date toDate){
-        return invoiceService.getInvoicesCustomerFromTo(customerId,fromDate, toDate);
+    public List<Invoice> getInvoicesCustomerFromTo(int customerId, Date fromDate, Date toDate, int page){
+        return invoiceService.getInvoicesCustomerFromTo(customerId,fromDate, toDate, page);
     }
 
-    public List<Invoice> getInvoicesStaffFromTo(int staffId, Date fromDate, Date toDate){
-        return invoiceService.getInvoicesStaffFromTo(staffId, fromDate, toDate);
+    public List<Invoice> getInvoicesStaffFromTo(int staffId, Date fromDate, Date toDate, int page){
+        return invoiceService.getInvoicesStaffFromTo(staffId, fromDate, toDate, page);
     }
 
-    public List<Invoice> getInvoicesCustomerStaffFromTo(int customerId, int staffId, Date fromDate, Date toDate){
-        return invoiceService.getInvoicesCustomerStaffFromTo(customerId, staffId, fromDate, toDate);
+    public List<Invoice> getInvoicesCustomerStaffFromTo(int customerId, int staffId, Date fromDate, Date toDate, int page){
+        return invoiceService.getInvoicesCustomerStaffFromTo(customerId, staffId, fromDate, toDate, page);
     }
 
     public List<InvoiceDetail> getInvoiceDetailByInvoiceId(int invoiceId){

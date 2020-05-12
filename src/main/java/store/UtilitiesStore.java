@@ -34,9 +34,9 @@ public class UtilitiesStore {
         return utilitiesService.revenueCustomerStaffFromTo(customerId, staffId, fromDate, toDate);
     }
 
-    public List<Inventory> getInventoriesByDate(Date date) {
-        return utilitiesService.getInventoriesByDate(date);
+    public List<Inventory> getInventoriesByDate(Date date, int page) {
+        return utilitiesService.getInventoriesByDate(date, page);
     }
 
-    public void refreshDatabase() { utilitiesService.refreshDatabase();}
+    public void refreshDatabase() { utilitiesService.refreshDatabase(); }
 }

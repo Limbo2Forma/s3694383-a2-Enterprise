@@ -15,7 +15,7 @@ public class ProviderStore {
     @Autowired
     public void setProviderService(ProviderService providerService) { this.providerService = providerService; }
 
-    public List<Provider> getAllProviders(){ return providerService.getAllProviders(); }
+    public List<Provider> getAllProviders(int page){ return providerService.getAllProviders(page); }
 
     public Provider getProviderById(int providerId){ return providerService.getProviderById(providerId); }
 
@@ -25,9 +25,9 @@ public class ProviderStore {
 
     public void deleteProvider(int providerId){ providerService.deleteProvider(providerId); }
 
-    public List<Provider> getProviderByName(String providerName){ return providerService.getProviderByName(providerName); }
+    public List<Provider> getProviderByName(String providerName, int page){ return providerService.getProviderByName(providerName, page); }
 
-    public List<Provider> getProviderByAddress(String address){ return providerService.getProviderByAddress(address); }
+    public List<Provider> getProviderByAddress(String address, int page){ return providerService.getProviderByAddress(address, page); }
 
-    public List<Provider> getProviderByPhone(String phone){ return providerService.getProviderByPhone(phone); }
+    public List<Provider> getProviderByPhone(String phone, int page){ return providerService.getProviderByPhone(phone, page); }
 }

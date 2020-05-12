@@ -1,5 +1,7 @@
 package service;
 
+import config.GlobalVar;
+
 import model.Product;
 import model.ProductCategory;
 import org.hibernate.SessionFactory;
@@ -19,8 +21,11 @@ public class ProductService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Product> getAllProducts(){
-        return sessionFactory.getCurrentSession().createQuery("from Product").list();
+    public List<Product> getAllProducts(int page){
+        Query query =  sessionFactory.getCurrentSession().createQuery("from Product");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();
     }
 
     public Product getProductById(int productId){
@@ -43,17 +48,21 @@ public class ProductService {
         sessionFactory.getCurrentSession().delete(product);
     }
 
-    public List<Product> getProductByName(String productName){
+    public List<Product> getProductByName(String productName, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Product as p where p.name like :productName ");
         query.setParameter("productName", "%" + productName + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Product> getProductByCategory(int categoryId){
+    public List<Product> getProductByCategory(int categoryId, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Product as p where p.productCategory.id = :categoryId ");
         query.setParameter("categoryId", categoryId);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 

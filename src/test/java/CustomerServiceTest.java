@@ -1,5 +1,3 @@
-//import configurations.Application;
-//import configurations.ServiceConfig;
 //import model.Customer;
 //import org.junit.BeforeClass;
 //import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +8,6 @@
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.ComponentScan;
 //import org.springframework.context.annotation.Configuration;
-//import org.springframework.test.context.ActiveProfiles;
-//import org.springframework.test.context.ContextConfiguration;
-//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-//import org.springframework.test.context.junit4.SpringRunner;
 //import service.CustomerService;
 //
 //import java.io.IOException;
@@ -23,7 +17,7 @@
 //import static org.junit.jupiter.api.Assertions.*;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = {Application.class, ServiceConfig.class})
-//public class UserServicesTest {
+//public class CustomerServicesTest {
 //
 //    @Autowired
 //    @Qualifier("userService")
@@ -42,7 +36,7 @@
 //        System.out.println(customerService);
 //
 //        try {
-//            Customer actualUser = userServices.addUser(user);
+//            Customer actualUser = cu.addUser(user);
 //            assertEquals(user.getUsername(),actualUser.getUsername());
 //            System.out.println(userServices.getUserById(user.getuId()));
 //        } catch (ExecutionException e) {

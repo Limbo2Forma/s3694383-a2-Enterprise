@@ -1,5 +1,6 @@
 package controller;
 
+import config.GlobalVar;
 import model.DeliveryNoteDetail;
 import model.DeliveryNote;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import store.DeliveryNoteStore;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,17 +17,12 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/deliveryNotes")
 public class DeliveryNoteController {
-    private final String dateFormat = "dd-MM-yyyy";
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-
     private DeliveryNoteStore deliveryNoteStore;
     @Autowired
-    public void setDeliveryNoteStore(DeliveryNoteStore deliveryNoteStore) {
-        this.deliveryNoteStore = deliveryNoteStore;
-    }
+    public void setDeliveryNoteStore(DeliveryNoteStore deliveryNoteStore) { this.deliveryNoteStore = deliveryNoteStore; }
 
-    @GetMapping(path="")
-    public List<DeliveryNote> getAllDeliveryNotes() { return deliveryNoteStore.getAllDeliveryNotes(); }
+    @GetMapping(path="/p={page}")
+    public List<DeliveryNote> getAllDeliveryNotes(@PathVariable int page) { return deliveryNoteStore.getAllDeliveryNotes(page); }
 
     @GetMapping(path = "/{deliveryNoteId}")
     public DeliveryNote getDeliveryNoteById(@PathVariable int deliveryNoteId){ return deliveryNoteStore.getDeliveryNoteById(deliveryNoteId); }
@@ -45,24 +40,27 @@ public class DeliveryNoteController {
         deliveryNoteStore.updateDeliveryNote(deliveryNote);
         return "deleted Delivery Note and its details with id: " + deliveryNote.getId();
     }
-    @GetMapping(path = "/date/{date}")
-    public List<DeliveryNote> getDeliveryNoteByDate(@PathVariable @DateTimeFormat(pattern = dateFormat) String date){
+    @GetMapping(path = "/date={date}/p={page}")
+    public List<DeliveryNote> getDeliveryNoteByDate(
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String date,
+            @PathVariable int page){
         try {
-            Date date_temp = simpleDateFormat.parse(date);
-            return deliveryNoteStore.getDeliveryNotesByDate(date_temp);
+            Date date_temp = GlobalVar.dateFormatter.parse(date);
+            return deliveryNoteStore.getDeliveryNotesByDate(date_temp, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
-    @GetMapping(path = "/from/{from}/to/{to}")
+    @GetMapping(path = "/from={from}/to={to}/p={page}")
     public List<DeliveryNote> getDeliveryNoteFromTo(
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to,
+            @PathVariable int page){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
-            return deliveryNoteStore.getDeliveryNotesFromTo(dateFrom, dateTo);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
+            return deliveryNoteStore.getDeliveryNotesFromTo(dateFrom, dateTo, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }

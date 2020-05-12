@@ -15,9 +15,9 @@ public class CustomerController {
     @Autowired
     public void setCustomerStore(CustomerStore customerStore) { this.customerStore = customerStore; }
 
-    @GetMapping(path="")
-    public List<Customer> getAllCustomers() {
-        return customerStore.getAllCustomers();
+    @GetMapping(path="/p={page}")
+    public List<Customer> getAllCustomers(@PathVariable int page) {
+        return customerStore.getAllCustomers(page);
     }
 
     @GetMapping(path = "/{customerId}")
@@ -38,12 +38,12 @@ public class CustomerController {
         return "updated customer with id: " + customer.getId();
     }
 
-    @GetMapping(path ="/name/{name}")
-    public List<Customer> getCustomerByName(@PathVariable String name){ return customerStore.getCustomerByName(name); }
+    @GetMapping(path ="/name={name}/p={page}")
+    public List<Customer> getCustomerByName(@PathVariable String name, @PathVariable int page){ return customerStore.getCustomerByName(name,page); }
 
-    @GetMapping(path ="/address/{address}")
-    public List<Customer> getCustomerByAddress(@PathVariable String address){ return customerStore.getCustomerByAddress(address); }
+    @GetMapping(path ="/address={address}/p={page}")
+    public List<Customer> getCustomerByAddress(@PathVariable String address, @PathVariable int page){ return customerStore.getCustomerByAddress(address,page); }
 
-    @GetMapping(path ="/phone/{phone}")
-    public List<Customer> getCustomerByPhone(@PathVariable String phone){ return customerStore.getCustomerByPhone(phone); }
+    @GetMapping(path ="/phone={phone}/p={page}")
+    public List<Customer> getCustomerByPhone(@PathVariable String phone, @PathVariable int page){ return customerStore.getCustomerByPhone(phone,page); }
 }

@@ -15,8 +15,8 @@ public class ProviderController {
     @Autowired
     public void setProviderStore(ProviderStore providerStore) { this.providerStore = providerStore; }
 
-    @GetMapping(path="")
-    public List<Provider> getAllProviders() { return providerStore.getAllProviders(); }
+    @GetMapping(path="/p={page}")
+    public List<Provider> getAllProviders(@PathVariable int page) { return providerStore.getAllProviders(page); }
 
     @GetMapping(path = "/{providerId}")
     public Provider getProviderById(@PathVariable int providerId){ return providerStore.getProviderById(providerId); }
@@ -36,12 +36,18 @@ public class ProviderController {
         return "updated Provider with id: " + provider.getId();
     }
 
-    @GetMapping(path ="/name/{name}")
-    public List<Provider> getProviderByName(@PathVariable String name){ return providerStore.getProviderByName(name); }
+    @GetMapping(path ="/name={name}/p={page}")
+    public List<Provider> getProviderByName(@PathVariable String name, @PathVariable int page){
+        return providerStore.getProviderByName(name, page);
+    }
 
-    @GetMapping(path ="/address/{address}")
-    public List<Provider> getProviderByAddress(@PathVariable String address){ return providerStore.getProviderByAddress(address); }
+    @GetMapping(path ="/address={address}/p={page}")
+    public List<Provider> getProviderByAddress(@PathVariable String address, @PathVariable int page){
+        return providerStore.getProviderByAddress(address, page);
+    }
 
-    @GetMapping(path ="/phone/{phone}")
-    public List<Provider> getProviderByPhone(@PathVariable String phone){ return providerStore.getProviderByPhone(phone); }
+    @GetMapping(path ="/phone={phone}/p={page}")
+    public List<Provider> getProviderByPhone(@PathVariable String phone, @PathVariable int page){
+        return providerStore.getProviderByPhone(phone, page);
+    }
 }

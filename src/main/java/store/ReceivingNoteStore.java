@@ -18,8 +18,8 @@ public class ReceivingNoteStore {
         this.receivingNoteService = receivingNoteService;
     }
 
-    public List<ReceivingNote> getAllReceivingNotes(){
-        return receivingNoteService.getAllReceivingNotes();
+    public List<ReceivingNote> getAllReceivingNotes(int page){
+        return receivingNoteService.getAllReceivingNotes(page);
     }
 
     public ReceivingNote getReceivingNoteById(int receivingNoteId){
@@ -38,11 +38,11 @@ public class ReceivingNoteStore {
         receivingNoteService.deleteReceivingNote(receivingNoteId);
     }
 
-    public List<ReceivingNote> getReceivingNotesByDate(Date date){
-        return receivingNoteService.getReceivingNotesByDate(date);
+    public List<ReceivingNote> getReceivingNotesByDate(Date date, int page){
+        return receivingNoteService.getReceivingNotesByDate(date, page);
     }
 
-    public List<ReceivingNote> getReceivingNotesFromTo(Date fromDate, Date toDate){
-        return receivingNoteService.getReceivingNotesFromTo(fromDate, toDate);
+    public List<ReceivingNote> getReceivingNotesFromTo(Date fromDate, Date toDate, int page){
+        return receivingNoteService.getReceivingNotesFromTo(fromDate, toDate, page);
     }
 }

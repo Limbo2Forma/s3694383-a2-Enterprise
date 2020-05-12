@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.*;
 
 import org.hibernate.SessionFactory;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -17,8 +17,7 @@ import java.util.List;
 @Transactional
 @Service
 public class UtilitiesService {
-    private final String dateFormat = "dd-MM-yyyy";
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+
     private SessionFactory sessionFactory;
     @Autowired
     public void setSessionFactory(SessionFactory sessionFactory) { this.sessionFactory = sessionFactory; }
@@ -74,8 +73,11 @@ public class UtilitiesService {
         return (quantity - (long) invoiceQuery.getSingleResult());
     }
 
-    public List<Inventory> getInventoriesByDate(Date date){
-        List<Product> products = sessionFactory.getCurrentSession().createQuery("from Product").list();
+    public List<Inventory> getInventoriesByDate(Date date,int page){
+        Query query = sessionFactory.getCurrentSession().createQuery("from Product");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        List<Product> products =  query.list();
         List<Inventory> inventories = new ArrayList<>();
         for (Product p: products){
             long quantity = getQuantityUpToDate(p, date);
@@ -139,28 +141,28 @@ public class UtilitiesService {
         ProviderOrderService os = new ProviderOrderService();
         os.setSessionFactory(this.sessionFactory);
 
-        os.addOrder(new ProviderOrder(1,simpleDateFormat.parse("28-01-2019"),ss.getStaffById(1)
+        os.addOrder(new ProviderOrder(1, GlobalVar.dateFormatter.parse("28-01-2019"),ss.getStaffById(1)
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(1), 100, 100),
                     new ProviderOrderDetail(prs.getProductById(2), 11, 100),
                     new ProviderOrderDetail(prs.getProductById(3), 20, 100)
                 )));
-        os.addOrder(new ProviderOrder(2,simpleDateFormat.parse("29-01-2019"),ss.getStaffById(2)
+        os.addOrder(new ProviderOrder(2, GlobalVar.dateFormatter.parse("29-01-2019"),ss.getStaffById(2)
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(4), 1, 11),
                     new ProviderOrderDetail(prs.getProductById(5), 53, 10),
                     new ProviderOrderDetail(prs.getProductById(3), 22, 200)
         )));
-        os.addOrder(new ProviderOrder(3,simpleDateFormat.parse("28-02-2019"),ss.getStaffById(3)
+        os.addOrder(new ProviderOrder(3, GlobalVar.dateFormatter.parse("28-02-2019"),ss.getStaffById(3)
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(1), 1000, 1),
                     new ProviderOrderDetail(prs.getProductById(2), 11, 10)
         )));
-        os.addOrder(new ProviderOrder(4,simpleDateFormat.parse("28-03-2019"),ss.getStaffById(1)
+        os.addOrder(new ProviderOrder(4, GlobalVar.dateFormatter.parse("28-03-2019"),ss.getStaffById(1)
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(4), 70, 40)
         )));
-        os.addOrder(new ProviderOrder(5,simpleDateFormat.parse("28-01-2020"),ss.getStaffById(4)
+        os.addOrder(new ProviderOrder(5, GlobalVar.dateFormatter.parse("28-01-2020"),ss.getStaffById(4)
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(1), 103, 200),
                     new ProviderOrderDetail(prs.getProductById(2), 11, 160),
@@ -172,38 +174,38 @@ public class UtilitiesService {
         ReceivingNoteService rs = new ReceivingNoteService();
         rs.setSessionFactory(this.sessionFactory);
 
-        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(simpleDateFormat.parse("30-01-2019")
+        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("30-01-2019")
                 , ss.getStaffById(5)), 1);
-        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(simpleDateFormat.parse("30-01-2019")
+        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("30-01-2019")
                 , ss.getStaffById(4)), 2);
-        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(simpleDateFormat.parse("01-03-2019")
+        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("01-03-2019")
                 , ss.getStaffById(3)), 5);
-        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(simpleDateFormat.parse("30-01-2020")
+        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("30-01-2020")
                 , ss.getStaffById(3)), 3);
     }
     private void populateDeliveryNote() throws Exception {
         DeliveryNoteService ds = new DeliveryNoteService();
         ds.setSessionFactory(this.sessionFactory);
 
-        ds.addDeliveryNote(new DeliveryNote(1,simpleDateFormat.parse("02-10-2019"),ss.getStaffById(5),
+        ds.addDeliveryNote(new DeliveryNote(1, GlobalVar.dateFormatter.parse("02-10-2019"),ss.getStaffById(5),
                 Arrays.asList(
                     new DeliveryNoteDetail(prs.getProductById(3), 100),
                     new DeliveryNoteDetail(prs.getProductById(1), 100),
                     new DeliveryNoteDetail(prs.getProductById(2), 100)
         )));
-        ds.addDeliveryNote(new DeliveryNote(2,simpleDateFormat.parse("09-10-2019"),ss.getStaffById(3),
+        ds.addDeliveryNote(new DeliveryNote(2, GlobalVar.dateFormatter.parse("09-10-2019"),ss.getStaffById(3),
                 Arrays.asList(
                     new DeliveryNoteDetail(prs.getProductById(2), 1),
                     new DeliveryNoteDetail(prs.getProductById(4), 5),
                     new DeliveryNoteDetail(prs.getProductById(3), 10),
                     new DeliveryNoteDetail(prs.getProductById(5), 2)
         )));
-        ds.addDeliveryNote(new DeliveryNote(3,simpleDateFormat.parse("08-02-2020"),ss.getStaffById(1),
+        ds.addDeliveryNote(new DeliveryNote(3, GlobalVar.dateFormatter.parse("08-02-2020"),ss.getStaffById(1),
                 Arrays.asList(
                     new DeliveryNoteDetail(prs.getProductById(3), 100),
                     new DeliveryNoteDetail(prs.getProductById(5), 10)
         )));
-        ds.addDeliveryNote(new DeliveryNote(4,simpleDateFormat.parse("08-03-2020"),ss.getStaffById(2),
+        ds.addDeliveryNote(new DeliveryNote(4, GlobalVar.dateFormatter.parse("08-03-2020"),ss.getStaffById(2),
                 Arrays.asList(
                     new DeliveryNoteDetail(prs.getProductById(1), 20)
         )));
@@ -212,9 +214,9 @@ public class UtilitiesService {
         InvoiceService is = new InvoiceService();
         is.setSessionFactory(this.sessionFactory);
 
-        is.addInvoiceWithImportedNote(new Invoice(simpleDateFormat.parse("30-01-2019")
+        is.addInvoiceWithImportedNote(new Invoice(GlobalVar.dateFormatter.parse("30-01-2019")
                 , ss.getStaffById(5), cs.getCustomerById(2)), 2);
-        is.addInvoiceWithImportedNote(new Invoice(simpleDateFormat.parse("30-01-2019")
+        is.addInvoiceWithImportedNote(new Invoice(GlobalVar.dateFormatter.parse("30-01-2019")
                 , ss.getStaffById(4), cs.getCustomerById(1)), 3);
     }
 

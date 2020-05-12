@@ -15,9 +15,9 @@ public class StaffController {
     @Autowired
     public void setStaffStore(StaffStore staffStore) { this.staffStore = staffStore; }
 
-    @GetMapping(path="")
-    public List<Staff> getAllStaffs() {
-        return staffStore.getAllStaffs();
+    @GetMapping(path="/p={page}")
+    public List<Staff> getAllStaffs(@PathVariable int page) {
+        return staffStore.getAllStaffs(page);
     }
 
     @GetMapping(path = "/{staffId}")
@@ -38,12 +38,18 @@ public class StaffController {
         return "updated Staff with id: " + staff.getId();
     }
 
-    @GetMapping(path ="/name/{name}")
-    public List<Staff> getStaffByName(@PathVariable String name){ return staffStore.getStaffByName(name); }
+    @GetMapping(path ="/name={name}/p={page}")
+    public List<Staff> getStaffByName(@PathVariable String name, @PathVariable int page){
+        return staffStore.getStaffByName(name, page);
+    }
 
-    @GetMapping(path ="/address/{address}")
-    public List<Staff> getStaffByAddress(@PathVariable String address){ return staffStore.getStaffByAddress(address); }
+    @GetMapping(path ="/address={address}/p={page}")
+    public List<Staff> getStaffByAddress(@PathVariable String address, @PathVariable int page){
+        return staffStore.getStaffByAddress(address, page);
+    }
 
-    @GetMapping(path ="/phone/{phone}")
-    public List<Staff> getStaffByPhone(@PathVariable String phone){ return staffStore.getStaffByPhone(phone); }
+    @GetMapping(path ="/phone={phone}/p={page}")
+    public List<Staff> getStaffByPhone(@PathVariable String phone, @PathVariable int page){
+        return staffStore.getStaffByPhone(phone, page);
+    }
 }

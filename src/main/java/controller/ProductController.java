@@ -16,9 +16,9 @@ public class ProductController {
     @Autowired
     public void setProductStore(ProductStore productStore) { this.productStore = productStore; }
 
-    @GetMapping(path="")
-    public List<Product> getAllProduct() {
-        return productStore.getAllProducts();
+    @GetMapping(path="/p={page}")
+    public List<Product> getAllProduct(@PathVariable int page) {
+        return productStore.getAllProducts(page);
     }
 
     @GetMapping(path="/{productId}")
@@ -39,11 +39,15 @@ public class ProductController {
         return "deleted Product with id: " + productId;
     }
 
-    @GetMapping(path="/name/{productName}")
-    public List<Product> getProductByName(@PathVariable String productName) { return productStore.getProductByName(productName); }
+    @GetMapping(path="/name={productName}/p={page}")
+    public List<Product> getProductByName(@PathVariable String productName, @PathVariable int page) {
+        return productStore.getProductByName(productName, page);
+    }
 
-    @GetMapping(path="/category/{categoryId}")
-    public List<Product> getProductByCategory(@PathVariable int categoryId) { return productStore.getProductByCategory(categoryId); }
+    @GetMapping(path="/category={categoryId}/p={page}")
+    public List<Product> getProductByCategory(@PathVariable int categoryId, @PathVariable int page) {
+        return productStore.getProductByCategory(categoryId, page);
+    }
 
     @GetMapping(path="/categories")
     public List<ProductCategory> getAllProductCategory() {

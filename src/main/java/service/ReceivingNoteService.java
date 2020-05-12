@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.*;
 import org.hibernate.query.Query;
 import org.hibernate.SessionFactory;
@@ -20,8 +21,11 @@ public class ReceivingNoteService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<ReceivingNote> getAllReceivingNotes(){
-        return sessionFactory.getCurrentSession().createQuery("from ReceivingNote").list();
+    public List<ReceivingNote> getAllReceivingNotes(int page){
+        Query query = sessionFactory.getCurrentSession().createQuery("from ReceivingNote");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();
     }
 
     public ReceivingNote getReceivingNoteById(int receivingNoteId){
@@ -64,17 +68,21 @@ public class ReceivingNoteService {
         sessionFactory.getCurrentSession().delete(receivingNote);
     }
 
-    public List<ReceivingNote> getReceivingNotesByDate(Date date){
+    public List<ReceivingNote> getReceivingNotesByDate(Date date, int page){
         Query query = sessionFactory.getCurrentSession().createQuery("from ReceivingNote as p where p.date = :date");
         query.setParameter("date",date);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<ReceivingNote> getReceivingNotesFromTo(Date fromDate, Date toDate){
+    public List<ReceivingNote> getReceivingNotesFromTo(Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession().createQuery(
                 "from ReceivingNote as p where p.date between :fromDate and :toDate");
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 }

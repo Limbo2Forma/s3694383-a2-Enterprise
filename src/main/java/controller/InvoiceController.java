@@ -1,5 +1,6 @@
 package controller;
 
+import config.GlobalVar;
 import model.Invoice;
 import model.InvoiceDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import store.InvoiceStore;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,18 +17,15 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/invoices")
 public class InvoiceController {
-    private final String dateFormat = "dd-MM-yyyy";
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-
     private InvoiceStore invoiceStore;
     @Autowired
     public void setInvoiceStore(InvoiceStore invoiceStore) {
         this.invoiceStore = invoiceStore;
     }
 
-    @GetMapping(path="")
-    public List<Invoice> getAllInvoices() {
-        return invoiceStore.getAllInvoices();
+    @GetMapping(path="/p={page}")
+    public List<Invoice> getAllInvoices(@PathVariable int page) {
+        return invoiceStore.getAllInvoices(page);
     }
 
     @GetMapping(path = "/{invoiceId}")
@@ -51,74 +48,81 @@ public class InvoiceController {
         return "updated invoice with id: " + invoice.getId();
     }
 
-    @GetMapping(path = "/customer/{customerId}")
-    public List<Invoice> getInvoiceByCustomer(@PathVariable int customerId){ return invoiceStore.getInvoicesByCustomer(customerId); }
+    @GetMapping(path = "/customer={customerId}/p={page}")
+    public List<Invoice> getInvoiceByCustomer(@PathVariable int customerId, @PathVariable int page){
+        return invoiceStore.getInvoicesByCustomer(customerId, page);
+    }
 
-    @GetMapping(path = "/date/{date}")
-    public List<Invoice> getInvoiceByDate(@PathVariable @DateTimeFormat(pattern = dateFormat) String date){
+    @GetMapping(path = "/date={date}/p={page}")
+    public List<Invoice> getInvoiceByDate(@PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String date,
+                                          @PathVariable int page){
         try {
-            Date date_temp = simpleDateFormat.parse(date);
-            return invoiceStore.getInvoicesByDate(date_temp);
+            Date date_temp = GlobalVar.dateFormatter.parse(date);
+            return invoiceStore.getInvoicesByDate(date_temp, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    @GetMapping(path = "/from/{from}/to/{to}")
+    @GetMapping(path = "/from={from}/to={to}/p={page}")
     public List<Invoice> getInvoiceFromTo(
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to,
+            @PathVariable int page){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
-            return invoiceStore.getInvoicesFromTo(dateFrom, dateTo);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
+            return invoiceStore.getInvoicesFromTo(dateFrom, dateTo, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    @GetMapping(path = "/customer/{customerId}/from/{from}/to/{to}")
+    @GetMapping(path = "/customer={customerId}/from={from}/to={to}/p={page}")
     public List<Invoice> getInvoiceCustomerFromTo(
             @PathVariable int customerId,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to,
+            @PathVariable int page){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
-            return invoiceStore.getInvoicesCustomerFromTo(customerId,dateFrom, dateTo);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
+            return invoiceStore.getInvoicesCustomerFromTo(customerId,dateFrom, dateTo, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    @GetMapping(path = "/staff/{staffId}/from/{from}/to/{to}")
+    @GetMapping(path = "/staff={staffId}/from={from}/to={to}/p={page}")
     public List<Invoice> getInvoiceStaffFromTo(
             @PathVariable int staffId,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to,
+            @PathVariable int page){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
-            return invoiceStore.getInvoicesStaffFromTo(staffId,dateFrom, dateTo);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
+            return invoiceStore.getInvoicesStaffFromTo(staffId,dateFrom, dateTo, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    @GetMapping(path = "/customer/{customerId}/staff/{staffId}/from/{from}/to/{to}")
+    @GetMapping(path = "/customer={customerId}/staff={staffId}/from={from}/to={to}/p={page}")
     public List<Invoice> getInvoiceCustomerStaffFromTo(
             @PathVariable int customerId,
             @PathVariable int staffId,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to,
+            @PathVariable int page){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
-            return invoiceStore.getInvoicesCustomerStaffFromTo(customerId,staffId,dateFrom, dateTo);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
+            return invoiceStore.getInvoicesCustomerStaffFromTo(customerId,staffId,dateFrom, dateTo, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }

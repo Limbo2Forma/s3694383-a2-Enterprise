@@ -19,8 +19,8 @@ public class DeliveryNoteStore {
         this.deliveryNoteService = deliveryNoteService;
     }
 
-    public List<DeliveryNote> getAllDeliveryNotes(){
-        return deliveryNoteService.getAllDeliveryNotes();
+    public List<DeliveryNote> getAllDeliveryNotes(int page){
+        return deliveryNoteService.getAllDeliveryNotes(page);
     }
 
     public DeliveryNote getDeliveryNoteById(int deliveryNoteId){
@@ -39,12 +39,12 @@ public class DeliveryNoteStore {
         deliveryNoteService.deleteDeliveryNote(deliveryNoteId);
     }
 
-    public List<DeliveryNote> getDeliveryNotesByDate(Date date){
-        return deliveryNoteService.getDeliveryNotesByDate(date);
+    public List<DeliveryNote> getDeliveryNotesByDate(Date date,int page){
+        return deliveryNoteService.getDeliveryNotesByDate(date, page);
     }
 
-    public List<DeliveryNote> getDeliveryNotesFromTo(Date fromDate, Date toDate){
-        return deliveryNoteService.getDeliveryNotesFromTo(fromDate, toDate);
+    public List<DeliveryNote> getDeliveryNotesFromTo(Date fromDate, Date toDate,int page){
+        return deliveryNoteService.getDeliveryNotesFromTo(fromDate, toDate, page);
     }
 
     public List<DeliveryNoteDetail> getDeliveryNoteDetailByDeliveryNoteId(int deliveryNoteId){

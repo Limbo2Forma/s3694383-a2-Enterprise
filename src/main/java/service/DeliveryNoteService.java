@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.*;
 import org.hibernate.query.Query;
 import org.hibernate.SessionFactory;
@@ -19,8 +20,11 @@ public class DeliveryNoteService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<DeliveryNote> getAllDeliveryNotes(){
-        return sessionFactory.getCurrentSession().createQuery("from DeliveryNote").list();
+    public List<DeliveryNote> getAllDeliveryNotes(int page){
+        Query query = sessionFactory.getCurrentSession().createQuery("from DeliveryNote");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();
     }
 
     public DeliveryNote getDeliveryNoteById(int deliveryNoteId){
@@ -61,17 +65,21 @@ public class DeliveryNoteService {
         sessionFactory.getCurrentSession().delete(deliveryNote);
     }
 
-    public List<DeliveryNote> getDeliveryNotesByDate(Date date){
+    public List<DeliveryNote> getDeliveryNotesByDate(Date date, int page){
         Query query = sessionFactory.getCurrentSession().createQuery("from DeliveryNote as p where p.date = :date");
         query.setParameter("date",date);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<DeliveryNote> getDeliveryNotesFromTo(Date fromDate, Date toDate){
+    public List<DeliveryNote> getDeliveryNotesFromTo(Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession().createQuery(
                 "from DeliveryNote as p where p.date between :fromDate and :toDate");
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 

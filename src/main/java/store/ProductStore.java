@@ -18,8 +18,8 @@ public class ProductStore {
         this.productService = productService;
     }
 
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    public List<Product> getAllProducts(int page){
+        return productService.getAllProducts(page);
     }
 
     public Product getProductById(int productId){
@@ -38,11 +38,12 @@ public class ProductStore {
         productService.deleteProduct(productId);
     }
 
-    public List<Product> getProductByName(String productName){
-       return productService.getProductByName(productName);
+    public List<Product> getProductByName(String productName, int page){
+       return productService.getProductByName(productName, page);
     }
 
-    public List<Product> getProductByCategory(int categoryId){ return productService.getProductByCategory(categoryId); }
+    public List<Product> getProductByCategory(int categoryId, int page){
+        return productService.getProductByCategory(categoryId, page); }
 
     public List<ProductCategory> getProductCategories() { return productService.getProductCategories(); }
 

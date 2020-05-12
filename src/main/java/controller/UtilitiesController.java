@@ -1,5 +1,6 @@
 package controller;
 
+import config.GlobalVar;
 import model.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import store.UtilitiesStore;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -15,8 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/utilities")
 public class UtilitiesController {
-    private final String dateFormat = "dd-MM-yyyy";
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+
     private UtilitiesStore utilitiesStore;
     @Autowired
     public void setUtilitiesStore(UtilitiesStore utilitiesStore) {
@@ -26,11 +25,11 @@ public class UtilitiesController {
 
     @GetMapping(path = "/revenue/from/{from}/to/{to}")
     public Long revenueFromTo(
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
             return utilitiesStore.revenueFromTo(dateFrom, dateTo);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -40,11 +39,11 @@ public class UtilitiesController {
     @GetMapping(path = "/revenue/customer/{customerId}/from/{from}/to/{to}")
     public Long revenueCustomerFromTo(
             @PathVariable int customerId,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
             return utilitiesStore.revenueCustomerFromTo(customerId,dateFrom, dateTo);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -54,11 +53,11 @@ public class UtilitiesController {
     @GetMapping(path = "/revenue/staff/{staffId}/from/{from}/to/{to}")
     public Long revenueStaffFromTo(
             @PathVariable int staffId,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
             return utilitiesStore.revenueStaffFromTo(staffId,dateFrom, dateTo);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -69,23 +68,23 @@ public class UtilitiesController {
     public Long revenueCustomerStaffFromTo(
             @PathVariable int customerId,
             @PathVariable int staffId,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String from,
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String to){
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
+            @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to){
         try {
-            Date dateFrom = simpleDateFormat.parse(from);
-            Date dateTo = simpleDateFormat.parse(to);
+            Date dateFrom = GlobalVar.dateFormatter.parse(from);
+            Date dateTo = GlobalVar.dateFormatter.parse(to);
             return utilitiesStore.revenueCustomerStaffFromTo(customerId,staffId,dateFrom, dateTo);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return -1L;
     }
-    @GetMapping(path = "/warehouse/{date}")
-    public List<Inventory> getInventoriesByDate(
-            @PathVariable @DateTimeFormat(pattern = dateFormat) String date){
+    @GetMapping(path = "/warehouse={date}/p={page}")
+    public List<Inventory> getInventoriesByDate(@PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String date,
+                                                @PathVariable int page){
         try {
-            Date temp = simpleDateFormat.parse(date);
-            return utilitiesStore.getInventoriesByDate(temp);
+            Date temp = GlobalVar.dateFormatter.parse(date);
+            return utilitiesStore.getInventoriesByDate(temp, page);
         } catch (ParseException e) {
             e.printStackTrace();
         }

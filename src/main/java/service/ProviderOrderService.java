@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -19,8 +20,11 @@ public class ProviderOrderService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<ProviderOrder> getAllOrders(){
-        return sessionFactory.getCurrentSession().createQuery("from ProviderOrder").list();
+    public List<ProviderOrder> getAllOrders(int page){
+        Query query = sessionFactory.getCurrentSession().createQuery("from ProviderOrder");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();
     }
 
     public ProviderOrder getOrderById(int orderId){
@@ -47,25 +51,31 @@ public class ProviderOrderService {
         sessionFactory.getCurrentSession().delete(providerOrder);
     }
 
-    public List<ProviderOrder> getOrdersByProvider(int providerId){
+    public List<ProviderOrder> getOrdersByProvider(int providerId, int page){
         Query query = sessionFactory.getCurrentSession().createQuery(
                 "from ProviderOrder as p where p.provider.id = :providerId");
         query.setParameter("providerId", providerId);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<ProviderOrder> getOrdersByDate(Date date){
+    public List<ProviderOrder> getOrdersByDate(Date date, int page){
         Query query = sessionFactory.getCurrentSession().createQuery(
                         "from ProviderOrder as p where p.date = :date");
         query.setParameter("date", date);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<ProviderOrder> getOrdersFromTo(Date fromDate, Date toDate){
+    public List<ProviderOrder> getOrdersFromTo(Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession().createQuery(
                 "from ProviderOrder as p where p.date between :fromDate and :toDate");
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 

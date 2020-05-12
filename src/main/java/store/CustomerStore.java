@@ -17,8 +17,8 @@ public class CustomerStore {
         this.customerService = customerService;
     }
 
-    public List<Customer> getAllCustomers(){
-        return customerService.getAllCustomers();
+    public List<Customer> getAllCustomers(int page){
+        return customerService.getAllCustomers(page);
     }
 
     public Customer getCustomerById(int customerId){
@@ -35,11 +35,9 @@ public class CustomerStore {
         customerService.deleteCustomer(customerId);
     }
 
-    public List<Customer> getCustomerByName(String customerName){ return customerService.getCustomerByName(customerName); }
+    public List<Customer> getCustomerByName(String customerName, int page){ return customerService.getCustomerByName(customerName, page); }
 
-    public List<Customer> getCustomerByAddress(String address){ return customerService.getCustomerByAddress(address); }
+    public List<Customer> getCustomerByAddress(String address,int page){ return customerService.getCustomerByAddress(address, page); }
 
-    public List<Customer> getCustomerByPhone(String phone){
-        return customerService.getCustomerByPhone(phone);
-    }
+    public List<Customer> getCustomerByPhone(String phone,int page){ return customerService.getCustomerByPhone(phone, page); }
 }

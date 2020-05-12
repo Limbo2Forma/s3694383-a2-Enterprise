@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -20,8 +21,11 @@ public class InvoiceService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Invoice> getAllInvoices(){
-        return sessionFactory.getCurrentSession().createQuery("from Invoice").list();
+    public List<Invoice> getAllInvoices(int page){
+        Query query =  sessionFactory.getCurrentSession().createQuery("from Invoice");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();
     }
 
     public Invoice getInvoiceById(int invoiceId){
@@ -69,52 +73,64 @@ public class InvoiceService {
         sessionFactory.getCurrentSession().delete(invoice);
     }
 
-    public List<Invoice> getInvoicesByCustomer(int customerId){
+    public List<Invoice> getInvoicesByCustomer(int customerId, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Invoice as p where p.customer.id = :customerId");
         query.setParameter("customerId", customerId);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Invoice> getInvoicesByDate(Date date){
+    public List<Invoice> getInvoicesByDate(Date date, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Invoice as p where p.date = :date");
         query.setParameter("date", date);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Invoice> getInvoicesFromTo(Date fromDate, Date toDate){
+    public List<Invoice> getInvoicesFromTo(Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession().createQuery("from Invoice as p where p.date between :fromDate and :toDate");
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Invoice> getInvoicesCustomerFromTo(int customerId, Date fromDate, Date toDate){
+    public List<Invoice> getInvoicesCustomerFromTo(int customerId, Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Invoice as p where (p.date between :fromDate and :toDate) and p.customer.id = :customerId");
         query.setParameter("customerId", customerId);
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Invoice> getInvoicesStaffFromTo(int staffId, Date fromDate, Date toDate){
+    public List<Invoice> getInvoicesStaffFromTo(int staffId, Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Invoice as p where (p.date between :fromDate and :toDate) and p.staff.id = :staffId");
         query.setParameter("staffId", staffId);
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Invoice> getInvoicesCustomerStaffFromTo(int customerId, int staffId, Date fromDate, Date toDate){
+    public List<Invoice> getInvoicesCustomerStaffFromTo(int customerId, int staffId, Date fromDate, Date toDate, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Invoice as p where (p.date between :fromDate and :toDate) and (p.customer.id = :customerId) and (p.staff.id = :staffId)");
         query.setParameter("customerId", customerId);
         query.setParameter("staffId", staffId);
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 

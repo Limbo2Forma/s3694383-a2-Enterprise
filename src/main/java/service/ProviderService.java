@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.Provider;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -18,8 +19,11 @@ public class ProviderService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Provider> getAllProviders(){
-        return sessionFactory.getCurrentSession().createQuery("from Provider").list();
+    public List<Provider> getAllProviders(int page){
+        Query query = sessionFactory.getCurrentSession().createQuery("from Provider");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();   
     }
 
     public Provider getProviderById(int providerId){
@@ -40,24 +44,30 @@ public class ProviderService {
         sessionFactory.getCurrentSession().delete(provider);
     }
 
-    public List<Provider> getProviderByName(String name){
+    public List<Provider> getProviderByName(String name, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Provider as p where p.name like :providerName ");
         query.setParameter("providerName", "%" + name + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Provider> getProviderByAddress(String address){
+    public List<Provider> getProviderByAddress(String address, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Provider as p where p.address like :address ");
         query.setParameter("address", "%" + address + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Provider> getProviderByPhone(String phone){
+    public List<Provider> getProviderByPhone(String phone, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Provider as p where p.phone like :phone ");
         query.setParameter("phone", "%" + phone + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 }

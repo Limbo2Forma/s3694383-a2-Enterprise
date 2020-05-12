@@ -19,8 +19,8 @@ public class ProviderOrderStore {
         this.providerOrderService = providerOrderService;
     }
 
-    public List<ProviderOrder> getAllOrders(){
-        return providerOrderService.getAllOrders();
+    public List<ProviderOrder> getAllOrders(int page){
+        return providerOrderService.getAllOrders(page);
     }
 
     public ProviderOrder getOrderById(int orderId){
@@ -39,16 +39,16 @@ public class ProviderOrderStore {
         providerOrderService.deleteOrder(orderId);
     }
 
-    public List<ProviderOrder> getOrdersByProvider(int providerId){
-        return providerOrderService.getOrdersByProvider(providerId);
+    public List<ProviderOrder> getOrdersByProvider(int providerId, int page){
+        return providerOrderService.getOrdersByProvider(providerId, page);
     }
 
-    public List<ProviderOrder> getOrdersByDate(Date date){
-        return providerOrderService.getOrdersByDate(date);
+    public List<ProviderOrder> getOrdersByDate(Date date, int page){
+        return providerOrderService.getOrdersByDate(date, page);
     }
 
-    public List<ProviderOrder> getOrdersFromTo(Date fromDate, Date toDate){
-        return providerOrderService.getOrdersFromTo(fromDate, toDate);
+    public List<ProviderOrder> getOrdersFromTo(Date fromDate, Date toDate, int page){
+        return providerOrderService.getOrdersFromTo(fromDate, toDate, page);
     }
 
     public List<ProviderOrderDetail> getOrderDetailByOrderId(int orderId) {

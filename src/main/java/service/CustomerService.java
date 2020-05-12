@@ -1,5 +1,6 @@
 package service;
 
+import config.GlobalVar;
 import model.Customer;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -18,8 +19,11 @@ public class CustomerService {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Customer> getAllCustomers(){
-        return sessionFactory.getCurrentSession().createQuery("from Customer").list();
+    public List<Customer> getAllCustomers(int page){
+        Query query = sessionFactory.getCurrentSession().createQuery("from Customer");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
+        return query.list();
     }
 
     public Customer getCustomerById(int customerId){
@@ -40,24 +44,30 @@ public class CustomerService {
         sessionFactory.getCurrentSession().delete(customer);
     }
 
-    public List<Customer> getCustomerByName(String name){
+    public List<Customer> getCustomerByName(String name, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Customer as p where p.name like :customerName ");
         query.setParameter("customerName", "%" + name + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Customer> getCustomerByAddress(String address){
+    public List<Customer> getCustomerByAddress(String address, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Customer as p where p.address like :address ");
         query.setParameter("address", "%" + address + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 
-    public List<Customer> getCustomerByPhone(String phone){
+    public List<Customer> getCustomerByPhone(String phone, int page){
         Query query = sessionFactory.getCurrentSession()
                 .createQuery("from Customer as p where p.phone like :phone ");
         query.setParameter("phone", "%" + phone + "%");
+        query.setFirstResult(page * GlobalVar.pageSize);
+        query.setMaxResults(GlobalVar.pageSize);
         return query.list();
     }
 }
