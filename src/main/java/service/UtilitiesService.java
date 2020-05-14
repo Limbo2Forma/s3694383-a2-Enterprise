@@ -27,7 +27,9 @@ public class UtilitiesService {
                 "select sum(totalPrice) from Invoice where date between :fromDate and :toDate");
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
-        return (Long) query.getSingleResult();
+        Object result = query.getSingleResult();
+        if (result == null) return 0L;
+        return (Long) result;
     }
 
     public Long revenueCustomerFromTo(int customerId, Date fromDate, Date toDate) {
@@ -36,7 +38,9 @@ public class UtilitiesService {
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
         query.setParameter("customerId",customerId);
-        return (Long) query.getSingleResult();
+        Object result = query.getSingleResult();
+        if (result == null) return 0L;
+        return (Long) result;
     }
 
     public Long revenueStaffFromTo(int staffId, Date fromDate, Date toDate) {
@@ -45,7 +49,9 @@ public class UtilitiesService {
         query.setParameter("fromDate",fromDate);
         query.setParameter("toDate",toDate);
         query.setParameter("staffId",staffId);
-        return (Long) query.getSingleResult();
+        Object result = query.getSingleResult();
+        if (result == null) return 0L;
+        return (Long) result;
     }
 
     public Long revenueCustomerStaffFromTo(int customerId, int staffId, Date fromDate, Date toDate) {
@@ -56,21 +62,35 @@ public class UtilitiesService {
         query.setParameter("toDate",toDate);
         query.setParameter("customerId",customerId);
         query.setParameter("staffId",staffId);
-        return (Long) query.getSingleResult();
+        Object result = query.getSingleResult();
+        if (result == null) return 0L;
+        return (Long) result;
     }
 
     public long getQuantityUpToDate(Product product, Date date){
-        Query orderQuery = sessionFactory.getCurrentSession().createQuery(
+        Query receivingQuery = sessionFactory.getCurrentSession().createQuery(
                 "select sum(quantity) from ReceivingNoteDetail where receivingNote.date <= :date and product.id = :productId");
-        orderQuery.setParameter("date", date);
-        orderQuery.setParameter("productId", product.getId());
-        long quantity = (long) orderQuery.getSingleResult();
-        Query invoiceQuery = sessionFactory.getCurrentSession().createQuery(
-                "select sum(quantity) from DeliveryNoteDetail where deliveryNote.date <= :date and product.id = :productId");
-        invoiceQuery.setParameter("date", date);
-        invoiceQuery.setParameter("productId", product.getId());
+        receivingQuery.setParameter("date", date);
+        receivingQuery.setParameter("productId", product.getId());
+        long receivingQuantity = 0;
+        if (receivingQuery.getSingleResult() == null) System.out.println("receiving null ?????????????????????");
+        else {
+            receivingQuantity = (long) receivingQuery.getSingleResult();
+            System.out.println(receivingQuantity);
+        }
 
-        return (quantity - (long) invoiceQuery.getSingleResult());
+        Query deliveryQuery = sessionFactory.getCurrentSession().createQuery(
+                "select sum(quantity) from DeliveryNoteDetail where deliveryNote.date <= :date and product.id = :productId");
+        deliveryQuery.setParameter("date", date);
+        deliveryQuery.setParameter("productId", product.getId());
+        long deliveryQuantity = 0;
+        if (deliveryQuery.getSingleResult() == null) System.out.println("delivery null ?????????????????????");
+        else {
+            deliveryQuantity = (long) deliveryQuery.getSingleResult();
+            System.out.println(deliveryQuantity);
+        }
+
+        return receivingQuantity - deliveryQuantity;
     }
 
     public List<Inventory> getInventoriesByDate(Date date,int page){

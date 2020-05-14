@@ -92,6 +92,6 @@ public class ProviderOrderController {
     @DeleteMapping(path = "/detail/{orderDetailId}")
     public String deleteOrderDetail(@PathVariable int orderDetailId){
         int detailFrom = providerOrderStore.deleteOrderDetail(orderDetailId);
-        return "updated Order Detail with id: " + orderDetailId + " from Order with id: " + detailFrom;
+        return "delete Order Detail with id: " + orderDetailId + " from Order with id: " + detailFrom;
     }
 }

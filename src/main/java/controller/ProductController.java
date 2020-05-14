@@ -61,8 +61,14 @@ public class ProductController {
     public int addProductCategory(@RequestBody ProductCategory category) { return productStore.addProductCategory(category); }
 
     @PutMapping(path="/categories")
-    public void updateProductCategory(@RequestBody ProductCategory category) { productStore.updateProductCategory(category); }
+    public String updateProductCategory(@RequestBody ProductCategory category) {
+        productStore.updateProductCategory(category);
+        return "updated Category with id: " + category.getId();
+    }
 
     @DeleteMapping(path="/categories/{categoryId}")
-    public void deleteProductCategory(@PathVariable int categoryId) { productStore.deleteProductCategory(categoryId); }
+    public String deleteProductCategory(@PathVariable int categoryId) {
+        productStore.deleteProductCategory(categoryId);
+        return "delete Category with id: " + categoryId;
+    }
 }

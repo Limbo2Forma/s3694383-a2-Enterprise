@@ -48,7 +48,9 @@ public class ProviderOrderService {
 
     public void deleteOrder(int orderId){
         ProviderOrder providerOrder = getOrderById(orderId);
+        ReceivingNote receivingNote = sessionFactory.getCurrentSession().get(ReceivingNote.class, orderId);
         sessionFactory.getCurrentSession().delete(providerOrder);
+        sessionFactory.getCurrentSession().delete(receivingNote);
     }
 
     public List<ProviderOrder> getOrdersByProvider(int providerId, int page){

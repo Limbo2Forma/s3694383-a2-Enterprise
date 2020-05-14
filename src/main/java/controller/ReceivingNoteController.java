@@ -34,7 +34,6 @@ public class ReceivingNoteController {
     public int addReceivingNoteImportedOrder(@RequestBody ReceivingNote receivingNote, @PathVariable int importedOrderId) {
         return receivingNoteStore.addReceivingNoteWithImportedOrder(receivingNote, importedOrderId);
     }
-
     @DeleteMapping(path = "/{receivingNoteId}")
     public String deleteReceivingNote(@PathVariable int receivingNoteId){
         receivingNoteStore.deleteReceivingNote(receivingNoteId);

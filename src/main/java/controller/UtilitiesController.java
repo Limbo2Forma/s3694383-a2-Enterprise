@@ -23,7 +23,7 @@ public class UtilitiesController {
         utilitiesStore.refreshDatabase();
     }
 
-    @GetMapping(path = "/revenue/from/{from}/to/{to}")
+    @GetMapping(path = "/revenue/from={from}/to={to}")
     public Long revenueFromTo(
             @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
             @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String to){
@@ -34,9 +34,9 @@ public class UtilitiesController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return -1L;
+        return 0L;
     }
-    @GetMapping(path = "/revenue/customer/{customerId}/from/{from}/to/{to}")
+    @GetMapping(path = "/revenue/customer={customerId}/from={from}/to={to}")
     public Long revenueCustomerFromTo(
             @PathVariable int customerId,
             @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
@@ -48,9 +48,9 @@ public class UtilitiesController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return -1L;
+        return 0L;
     }
-    @GetMapping(path = "/revenue/staff/{staffId}/from/{from}/to/{to}")
+    @GetMapping(path = "/revenue/staff={staffId}/from={from}/to={to}")
     public Long revenueStaffFromTo(
             @PathVariable int staffId,
             @PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String from,
@@ -62,9 +62,9 @@ public class UtilitiesController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return -1L;
+        return 0L;
     }
-    @GetMapping(path = "/revenue/customer/{customerId}/staff/{staffId}/from/{from}/to/{to}")
+    @GetMapping(path = "/revenue/customer={customerId}/staff={staffId}/from={from}/to={to}")
     public Long revenueCustomerStaffFromTo(
             @PathVariable int customerId,
             @PathVariable int staffId,
@@ -77,9 +77,9 @@ public class UtilitiesController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return -1L;
+        return 0L;
     }
-    @GetMapping(path = "/warehouse={date}/p={page}")
+    @GetMapping(path = "/warehouse/date={date}/p={page}")
     public List<Inventory> getInventoriesByDate(@PathVariable @DateTimeFormat(pattern = GlobalVar.dateFormat) String date,
                                                 @PathVariable int page){
         try {

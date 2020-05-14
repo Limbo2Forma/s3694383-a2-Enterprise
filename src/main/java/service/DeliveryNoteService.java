@@ -62,7 +62,9 @@ public class DeliveryNoteService {
 
     public void deleteDeliveryNote(int deliveryNoteId){
         DeliveryNote deliveryNote = getDeliveryNoteById(deliveryNoteId);
+        Invoice invoice = sessionFactory.getCurrentSession().get(Invoice.class, deliveryNoteId);
         sessionFactory.getCurrentSession().delete(deliveryNote);
+        sessionFactory.getCurrentSession().delete(invoice);
     }
 
     public List<DeliveryNote> getDeliveryNotesByDate(Date date, int page){
