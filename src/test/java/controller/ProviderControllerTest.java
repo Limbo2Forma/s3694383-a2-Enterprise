@@ -3,7 +3,7 @@ package controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import model.Customer;
+import model.Provider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import store.CustomerStore;
+import store.ProviderStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,26 +24,25 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-public class CustomerControllerTest {
+public class ProviderControllerTest {
 
-    public CustomerStore store = mock(CustomerStore.class);
+    public ProviderStore store = mock(ProviderStore.class);
     public MockMvc mockMvc;
 
     @BeforeEach
     void configureSystemUnderTest() {
-        CustomerController customerController = new CustomerController();
-        customerController.setCustomerStore(store);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        ProviderController providerController = new ProviderController();
+        providerController.setProviderStore(store);
+        mockMvc = MockMvcBuilders.standaloneSetup(providerController).build();
     }
-
-    public Customer customer = MockData.customer;
-    public List<Customer> customerList = MockData.customerList;
+    public Provider provider = MockData.provider;
+    public List<Provider> providerList = MockData.providerList;
 
     @Nested
-    @DisplayName("getAllCustomer test")
-    class GetAllCustomersTest {
+    @DisplayName("getAllProvider test")
+    class GetAllProvidersTest {
         ResultActions getAllPage0() throws Exception {
-            return mockMvc.perform(get("/customers/p={page}",0));
+            return mockMvc.perform(get("/providers/p={page}",0));
         }
 
         @Test
@@ -53,12 +52,12 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When no customer in database")
-        class WhenNoCustomerInDb{
+        @DisplayName("When no provider in database")
+        class WhenNoProviderInDb{
 
             @BeforeEach
             void storeReturnEmptyList() {
-                given(store.getAllCustomers(0)).willReturn(new ArrayList<>());
+                given(store.getAllProviders(0)).willReturn(new ArrayList<>());
             }
 
             @Test
@@ -70,89 +69,91 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When 2 customers in database")
-        class WhenCustomersInDb {
+        @DisplayName("When 2 providers in database")
+        class WhenProvidersInDb {
             @BeforeEach
-            void storeReturnCustomerList() {
-                given(store.getAllCustomers(0)).willReturn(MockData.customerList);
+            void storeReturnProviderList() {
+                given(store.getAllProviders(0)).willReturn(providerList);
             }
             @Test
-            @DisplayName("Should display 2 customers")
-            void responseCustomerList() throws Exception {
+            @DisplayName("Should display 2 providers")
+            void responseProviderList() throws Exception {
                 String resultJson = getAllPage0().andReturn().getResponse().getContentAsString();
 
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-                String expectedJson = mapper.writer().writeValueAsString(customerList);
+                String expectedJson = mapper.writer().writeValueAsString(providerList);
 
                 assertEquals(expectedJson, resultJson);
             }
         }
     }
     @Nested
-    @DisplayName("getCustomerById test")
-    class GetCustomerByIdTest {
-        ResultActions getById1() throws Exception {
-            return mockMvc.perform(get("/customers/{id}", 1));
+    @DisplayName("getProviderById test")
+    class GetProviderByIdTest {
+        ResultActions getById2() throws Exception {
+            return mockMvc.perform(get("/providers/{id}", 2));
         }
 
         @Test
         @DisplayName("Should return the HTTP status code 200")
         void shouldReturnHttpStatusCodeOk() throws Exception {
-            getById1().andExpect(status().isOk());
+            getById2().andExpect(status().isOk());
         }
 
         @Nested
-        @DisplayName("When no customer with id")
-        class WhenNoCustomerWithId{
+        @DisplayName("When no provider with id")
+        class WhenNoProviderWithId{
 
             @BeforeEach
-            void storeReturnNoCustomer() {
-                given(store.getCustomerById(1)).willReturn(null);
+            void storeReturnNoProvider() {
+                given(store.getProviderById(2)).willReturn(null);
             }
 
             @Test
             @DisplayName("Should display zero todo items")
             void responseEmptyObject() throws Exception {
-                String json = getById1().andReturn().getResponse().getContentAsString();
+                String json = getById2().andReturn().getResponse().getContentAsString();
                 assertEquals("", json);
             }
         }
 
         @Nested
-        @DisplayName("When exist customers with id")
-        class WhenCustomerInDb {
+        @DisplayName("When exist providers with id")
+        class WhenProviderInDb {
             @BeforeEach
-            void storeReturnCustomer() {
-                given(store.getCustomerById(1)).willReturn(MockData.customer);
+            void storeReturnProvider() {
+                given(store.getProviderById(2)).willReturn(provider);
             }
             @Test
-            @DisplayName("Should display customer")
-            void responseCustomer() throws Exception {
-                String resultJson = getById1().andReturn().getResponse().getContentAsString();
+            @DisplayName("Should display provider")
+            void responseProviderObject() throws Exception {
+                String resultJson = getById2().andReturn().getResponse().getContentAsString();
 
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-                String expectedJson = mapper.writer().writeValueAsString(MockData.customer);
+                String expectedJson = mapper.writer().writeValueAsString(provider);
 
                 assertEquals(expectedJson, resultJson);
             }
         }
     }
     @Nested
-    @DisplayName("addCustomer test")
-    class AddCustomerTest {
+    @DisplayName("addProvider test")
+    class AddProviderTest {
+
         ResultActions add() throws Exception {
+
             String requestJson = "{\n" +
-                    "        \"name\": \"customer 1a\",\n" +
-                    "        \"address\": \"address 1a\",\n" +
-                    "        \"phone\": \"0912782263\",\n" +
-                    "        \"fax\": \"fax 2a\",\n" +
-                    "        \"email\": \"email2@email.com\",\n" +
-                    "        \"contact\": \"contact me pls\"\n" +
+                    "    \"name\": \"provider 3\",\n" +
+                    "    \"address\": \"address 3333\",\n" +
+                    "    \"phone\": \"0912782223\",\n" +
+                    "    \"fax\": \"fax 333a\",\n" +
+                    "    \"email\": \"emai333332@email.com\",\n" +
+                    "    \"contact\": \"contact me pls\"\n" +
                     "}\n";
 
-            return mockMvc.perform(post("/customers").contentType(MediaType.APPLICATION_JSON)
+            return mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON)
                     .content(requestJson));
         }
         @Test
@@ -160,24 +161,25 @@ public class CustomerControllerTest {
         void shouldReturnHttpStatusCodeOk() throws Exception {
             add().andExpect(status().isOk());
         }
+
         @Test
-        @DisplayName("Should display newly added customer Id, the value is always 0 due to the auto generated id")
-        void responseCustomerId() throws Exception {
+        @DisplayName("Should display newly added provider Id, the value is always 0 due to the auto generated id")
+        void responseProviderObject() throws Exception {
             String json = add().andReturn().getResponse().getContentAsString();
             assertEquals("0", json);
         }
     }
     @Nested
-    @DisplayName("updateCustomer test")
-    class UpdateCustomerTest {
+    @DisplayName("updateProvider test")
+    class UpdateProviderTest {
         ResultActions update() throws Exception {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
             ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-            String requestJson=ow.writeValueAsString(customer);
+            String requestJson=ow.writeValueAsString(provider);
 
-            return mockMvc.perform(put("/customers").contentType(MediaType.APPLICATION_JSON)
+            return mockMvc.perform(put("/providers").contentType(MediaType.APPLICATION_JSON)
                     .content(requestJson));
         }
 
@@ -188,38 +190,38 @@ public class CustomerControllerTest {
         }
 
         @Test
-        @DisplayName("Should display updated customer message")
-        void responseUpdateMessage() throws Exception {
+        @DisplayName("Should display updated provider message")
+        void responseProviderObject() throws Exception {
             String json = update().andReturn().getResponse().getContentAsString();
-            assertEquals("updated Customer with id: 1", json);
+            assertEquals("updated Provider with id: 2", json);
         }
     }
     @Nested
-    @DisplayName("deleteCustomer test")
-    class DeleteCustomerTest {
+    @DisplayName("deleteProvider test")
+    class DeleteProviderTest {
 
-        ResultActions deleteId3() throws Exception {
-            return mockMvc.perform(delete("/customers/{customerId}", 3));
+        ResultActions deleteId1() throws Exception {
+            return mockMvc.perform(delete("/providers/{providerId}", 1));
         }
 
         @Test
         @DisplayName("Should return the HTTP status code 200")
         void shouldReturnHttpStatusCodeOk() throws Exception {
-            deleteId3().andExpect(status().isOk());
+            deleteId1().andExpect(status().isOk());
         }
 
         @Test
-        @DisplayName("Should display updated customer message")
-        void responseDeleteMessage() throws Exception {
-            String json = deleteId3().andReturn().getResponse().getContentAsString();
-            assertEquals("deleted Customer with id: 3", json);
+        @DisplayName("Should display updated provider message")
+        void responseProviderObject() throws Exception {
+            String json = deleteId1().andReturn().getResponse().getContentAsString();
+            assertEquals("deleted Provider with id: 1", json);
         }
     }
     @Nested
-    @DisplayName("getCustomersByName test")
-    class GetCustomersByNameTest {
+    @DisplayName("getProvidersByName test")
+    class GetProvidersByNameTest {
         ResultActions getByNamePage0Name1() throws Exception {
-            return mockMvc.perform(get("/customers/name={name}/p={page}","1",0));
+            return mockMvc.perform(get("/providers/name={name}/p={page}","1",0));
         }
 
         @Test
@@ -229,12 +231,12 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When no customer in database")
-        class WhenNoCustomerInDb{
+        @DisplayName("When no provider in database")
+        class WhenNoProviderInDb{
 
             @BeforeEach
             void storeReturnEmptyList() {
-                given(store.getCustomerByName("1", 0)).willReturn(new ArrayList<>());
+                given(store.getProviderByName("1", 0)).willReturn(new ArrayList<>());
             }
 
             @Test
@@ -246,30 +248,30 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When 2 customers in database")
-        class WhenCustomersInDb {
+        @DisplayName("When 2 providers in database")
+        class WhenProvidersInDb {
             @BeforeEach
-            void storeReturnCustomerList() {
-                given(store.getCustomerByName("1",0)).willReturn(customerList);
+            void storeReturnProviderList() {
+                given(store.getProviderByName("1",0)).willReturn(providerList);
             }
             @Test
-            @DisplayName("Should display 2 customers")
-            void responseCustomerList() throws Exception {
+            @DisplayName("Should display 2 providers")
+            void responseProviderList() throws Exception {
                 String resultJson = getByNamePage0Name1().andReturn().getResponse().getContentAsString();
 
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-                String expectedJson = mapper.writer().writeValueAsString(customerList);
+                String expectedJson = mapper.writer().writeValueAsString(providerList);
 
                 assertEquals(expectedJson, resultJson);
             }
         }
     }
     @Nested
-    @DisplayName("getCustomersByPhone test")
-    class GetCustomersByPhoneTest {
+    @DisplayName("getProvidersByPhone test")
+    class GetProvidersByPhoneTest {
         ResultActions getByPhone012Page0() throws Exception {
-            return mockMvc.perform(get("/customers/phone={phone}/p={page}","012",0));
+            return mockMvc.perform(get("/providers/phone={phone}/p={page}","012",0));
         }
 
         @Test
@@ -279,12 +281,12 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When no customer in database")
-        class WhenNoCustomerInDb{
+        @DisplayName("When no provider in database")
+        class WhenNoProviderInDb{
 
             @BeforeEach
             void storeReturnEmptyList() {
-                given(store.getCustomerByPhone("012",0)).willReturn(new ArrayList<>());
+                given(store.getProviderByPhone("012",0)).willReturn(new ArrayList<>());
             }
 
             @Test
@@ -296,30 +298,30 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When 2 customers in database")
-        class WhenCustomersInDb {
+        @DisplayName("When 2 providers in database")
+        class WhenProvidersInDb {
             @BeforeEach
-            void storeReturnCustomerList() {
-                given(store.getCustomerByPhone("012",0)).willReturn(customerList);
+            void storeReturnProviderList() {
+                given(store.getProviderByPhone("012",0)).willReturn(providerList);
             }
             @Test
-            @DisplayName("Should display 2 customers")
-            void responseCustomerList() throws Exception {
+            @DisplayName("Should display 2 providers")
+            void responseProviderList() throws Exception {
                 String resultJson = getByPhone012Page0().andReturn().getResponse().getContentAsString();
 
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-                String expectedJson = mapper.writer().writeValueAsString(customerList);
+                String expectedJson = mapper.writer().writeValueAsString(providerList);
 
                 assertEquals(expectedJson, resultJson);
             }
         }
     }
     @Nested
-    @DisplayName("getCustomersByAddress test")
-    class GetCustomersByAddressTest {
+    @DisplayName("getProvidersByAddress test")
+    class GetProvidersByAddressTest {
         ResultActions getByAddressAddrPage0() throws Exception {
-            return mockMvc.perform(get("/customers/address={address}/p={page}","addr",0));
+            return mockMvc.perform(get("/providers/address={address}/p={page}","addr",0));
         }
 
         @Test
@@ -329,12 +331,12 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When no customer in database")
-        class WhenNoCustomerInDb{
+        @DisplayName("When no provider in database")
+        class WhenNoProviderInDb{
 
             @BeforeEach
             void storeReturnEmptyList() {
-                given(store.getCustomerByAddress("addr",0)).willReturn(new ArrayList<>());
+                given(store.getProviderByAddress("addr",0)).willReturn(new ArrayList<>());
             }
 
             @Test
@@ -346,20 +348,20 @@ public class CustomerControllerTest {
         }
 
         @Nested
-        @DisplayName("When 2 customers in database")
-        class WhenCustomersInDb {
+        @DisplayName("When 2 providers in database")
+        class WhenProvidersInDb {
             @BeforeEach
-            void storeReturnCustomerList() {
-                given(store.getCustomerByAddress("addr",0)).willReturn(customerList);
+            void storeReturnProviderList() {
+                given(store.getProviderByAddress("addr",0)).willReturn(providerList);
             }
             @Test
-            @DisplayName("Should display 2 customers")
-            void responseCustomerList() throws Exception {
+            @DisplayName("Should display 2 providers")
+            void responseProviderList() throws Exception {
                 String resultJson = getByAddressAddrPage0().andReturn().getResponse().getContentAsString();
 
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-                String expectedJson = mapper.writer().writeValueAsString(customerList);
+                String expectedJson = mapper.writer().writeValueAsString(providerList);
 
                 assertEquals(expectedJson, resultJson);
             }

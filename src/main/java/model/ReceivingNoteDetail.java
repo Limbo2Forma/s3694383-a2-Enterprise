@@ -25,6 +25,13 @@ public class ReceivingNoteDetail {
 
     public ReceivingNoteDetail() { }
 
+    public ReceivingNoteDetail(int id, @NotNull ReceivingNote receivingNote, @NotNull Product product, @NotNull int quantity) {
+        this.id = id;
+        this.receivingNote = receivingNote;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     public int getId() {
         return id;
     }

@@ -103,18 +103,12 @@ public class DeliveryNoteService {
 
             if (invoice != null){
 
-                InvoiceDetail invoiceDetail = new InvoiceDetail();
-                int price = deliveryNoteDetail.getProduct().getSinglePrice() * deliveryNoteDetail.getQuantity();
-                invoiceDetail.setProduct(deliveryNoteDetail.getProduct());
-                invoiceDetail.setQuantity(deliveryNoteDetail.getQuantity());
-                invoiceDetail.setId(deliveryNoteDetail.getId());
-                invoiceDetail.setPrice(price);
-                invoiceDetail.setInvoice(invoice);
+                InvoiceDetail invoiceDetail = new InvoiceDetail(deliveryNoteDetail.getId(),invoice
+                        ,deliveryNoteDetail.getProduct(),deliveryNoteDetail.getQuantity());
 
                 List<InvoiceDetail> detailList = invoice.getInvoiceDetails();
                 detailList.add(invoiceDetail);
                 invoice.setInvoiceDetails(detailList);
-                invoice.setTotalPrice(invoice.getTotalPrice() + price);
 
                 sessionFactory.getCurrentSession().update(invoice);
 
@@ -141,15 +135,13 @@ public class DeliveryNoteService {
             InvoiceDetail invoiceDetail = sessionFactory.getCurrentSession()
                     .get(InvoiceDetail.class, deliveryNoteDetail.getId());
             if (invoiceDetail != null){
-                int oldPrice = invoiceDetail.getPrice();
-                int newPrice = deliveryNoteDetail.getProduct().getSinglePrice() * deliveryNoteDetail.getQuantity();
+                Invoice updatedInvoice = invoiceDetail.getInvoice();
+                updatedInvoice.setTotalPrice(updatedInvoice.getTotalPrice() - invoiceDetail.getPrice());
 
                 invoiceDetail.setProduct(deliveryNoteDetail.getProduct());
                 invoiceDetail.setQuantity(deliveryNoteDetail.getQuantity());
-                invoiceDetail.setId(deliveryNoteDetail.getId());
-                invoiceDetail.setPrice(newPrice);
-                Invoice updatedInvoice = invoiceDetail.getInvoice();
-                updatedInvoice.setTotalPrice(updatedInvoice.getTotalPrice() + newPrice - oldPrice);
+
+                updatedInvoice.setTotalPrice(updatedInvoice.getTotalPrice() + invoiceDetail.getPrice());
 
                 sessionFactory.getCurrentSession().update(invoiceDetail);
             }
@@ -170,7 +162,6 @@ public class DeliveryNoteService {
                     .get(InvoiceDetail.class, deliveryNoteDetailId);
             List<InvoiceDetail> invoiceDetails = invoice.getInvoiceDetails();
 
-            invoice.setTotalPrice(invoice.getTotalPrice() - invoiceDetail.getPrice());
             invoiceDetails.remove(invoiceDetail);
             invoice.setInvoiceDetails(invoiceDetails);
 

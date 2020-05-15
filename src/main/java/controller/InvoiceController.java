@@ -39,13 +39,13 @@ public class InvoiceController {
     @DeleteMapping(path = "/{invoiceId}")
     public String deleteInvoice(@PathVariable int invoiceId){
         invoiceStore.deleteInvoice(invoiceId);
-        return "delete Invoice and its details with id: " + invoiceId;
+        return "deleted Invoice and its details with id: " + invoiceId;
     }
 
     @PutMapping(path = "")
     public String updateInvoice(@RequestBody Invoice invoice){
         invoiceStore.updateInvoice(invoice);
-        return "updated invoice with id: " + invoice.getId();
+        return "updated Invoice and its details with id: " + invoice.getId();
     }
 
     @GetMapping(path = "/customer={customerId}/p={page}")

@@ -89,27 +89,25 @@ public class ProviderOrderService {
     }
 
     public int addOrderDetail(ProviderOrderDetail providerOrderDetail){
-        Product p = sessionFactory.getCurrentSession().get(Product.class, providerOrderDetail.getProduct().getId());
-        p.setCurrentQuantity(p.getCurrentQuantity() + providerOrderDetail.getQuantity());
-
         sessionFactory.getCurrentSession().save(providerOrderDetail);
 
         ReceivingNote note = sessionFactory.getCurrentSession()
                 .get(ReceivingNote.class, providerOrderDetail.getProviderOrder().getId());
 
         if (note != null){
-            ReceivingNoteDetail noteDetail = new ReceivingNoteDetail();
-
-            noteDetail.setProduct(providerOrderDetail.getProduct());
-            noteDetail.setQuantity(providerOrderDetail.getQuantity());
-            noteDetail.setId(providerOrderDetail.getId());
-            noteDetail.setReceivingNote(note);
+            ReceivingNoteDetail noteDetail = new ReceivingNoteDetail(providerOrderDetail.getId(),note
+                    ,providerOrderDetail.getProduct(),providerOrderDetail.getQuantity());
 
             List<ReceivingNoteDetail> noteDetailList = note.getReceivingNoteDetails();
             noteDetailList.add(noteDetail);
             note.setReceivingNoteDetails(noteDetailList);
 
             sessionFactory.getCurrentSession().update(note);
+
+            Product p = sessionFactory.getCurrentSession().get(Product.class, providerOrderDetail.getProduct().getId());
+            p.setCurrentQuantity(p.getCurrentQuantity() + providerOrderDetail.getQuantity());
+
+            sessionFactory.getCurrentSession().update(p);
         }
 
         return providerOrderDetail.getId();
@@ -118,11 +116,6 @@ public class ProviderOrderService {
     public void updateOrderDetail(ProviderOrderDetail providerOrderDetail){
         ProviderOrderDetail detail = sessionFactory.getCurrentSession()
                 .get(ProviderOrderDetail.class, providerOrderDetail.getId());
-        Product product = detail.getProduct();
-        product.setCurrentQuantity(product.getCurrentQuantity() - detail.getQuantity());
-
-        Product p = sessionFactory.getCurrentSession().get(Product.class, providerOrderDetail.getProduct().getId());
-        p.setCurrentQuantity(p.getCurrentQuantity() + providerOrderDetail.getQuantity());
 
         detail.setPrice(providerOrderDetail.getPrice());
         detail.setProduct(providerOrderDetail.getProduct());
@@ -133,17 +126,24 @@ public class ProviderOrderService {
         ReceivingNoteDetail noteDetail = sessionFactory.getCurrentSession()
                 .get(ReceivingNoteDetail.class, providerOrderDetail.getId());
         if (noteDetail != null){
+            Product product = noteDetail.getProduct();
+            product.setCurrentQuantity(product.getCurrentQuantity() - noteDetail.getQuantity());
+            sessionFactory.getCurrentSession().update(product);
+
             noteDetail.setProduct(providerOrderDetail.getProduct());
             noteDetail.setQuantity(providerOrderDetail.getQuantity());
+
             sessionFactory.getCurrentSession().update(noteDetail);
+
+            product = noteDetail.getProduct();
+            product.setCurrentQuantity(product.getCurrentQuantity() + noteDetail.getQuantity());
+            sessionFactory.getCurrentSession().update(product);
         }
 
     }
 
     public int deleteOrderDetail(int orderDetailId){
         ProviderOrderDetail oldDetail = sessionFactory.getCurrentSession().get(ProviderOrderDetail.class, orderDetailId);
-        Product product = oldDetail.getProduct();
-        product.setCurrentQuantity(product.getCurrentQuantity() - oldDetail.getQuantity());
 
         ProviderOrder order = oldDetail.getProviderOrder();
         int detailFrom = order.getId();
@@ -157,6 +157,10 @@ public class ProviderOrderService {
         if (note != null) {
             ReceivingNoteDetail noteDetail = sessionFactory.getCurrentSession()
                     .get(ReceivingNoteDetail.class, orderDetailId);
+            Product product = noteDetail.getProduct();
+            product.setCurrentQuantity(product.getCurrentQuantity() - noteDetail.getQuantity());
+            sessionFactory.getCurrentSession().update(product);
+
             List<ReceivingNoteDetail> noteDetailList = note.getReceivingNoteDetails();
             noteDetailList.remove(noteDetail);
             note.setReceivingNoteDetails(noteDetailList);

@@ -29,13 +29,13 @@ public class CustomerController {
     @DeleteMapping(path = "/{customerId}")
     public String deleteCustomer(@PathVariable int customerId){
         customerStore.deleteCustomer(customerId);
-        return "deleted customer with id: " + customerId;
+        return "deleted Customer with id: " + customerId;
     }
 
     @PutMapping(path = "")
     public String updateCustomer(@RequestBody Customer customer){
         customerStore.updateCustomer(customer);
-        return "updated customer with id: " + customer.getId();
+        return "updated Customer with id: " + customer.getId();
     }
 
     @GetMapping(path ="/name={name}/p={page}")

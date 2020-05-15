@@ -47,8 +47,6 @@ public class ProductStore {
 
     public List<ProductCategory> getProductCategories() { return productService.getProductCategories(); }
 
-    public ProductCategory getProductCategoryById(int categoryId) { return productService.getProductCategoryById(categoryId); }
-
     public int addProductCategory(ProductCategory category) { return productService.addProductCategory(category); }
 
     public void updateProductCategory(ProductCategory category) { productService.updateProductCategory(category); }

@@ -38,11 +38,7 @@ public class ReceivingNoteService {
         List<ReceivingNoteDetail> noteDetailList = new ArrayList<>();
 
         for (ProviderOrderDetail od : orderDetails) {
-            ReceivingNoteDetail r = new ReceivingNoteDetail();
-            r.setProduct(od.getProduct());
-            r.setQuantity(od.getQuantity());
-            r.setId(od.getId());
-            r.setReceivingNote(receivingNote);
+            ReceivingNoteDetail r = new ReceivingNoteDetail(od.getId(),receivingNote,od.getProduct(),od.getQuantity());
             noteDetailList.add(r);
             Product p = sessionFactory.getCurrentSession().get(Product.class, od.getProduct().getId());
             p.setCurrentQuantity(p.getCurrentQuantity() + od.getQuantity());

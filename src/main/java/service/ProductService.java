@@ -84,7 +84,7 @@ public class ProductService {
     }
 
     public void deleteProductCategory(int categoryId){
-        ProductCategory category = getProductCategoryById(categoryId);
+        ProductCategory category = sessionFactory.getCurrentSession().get(ProductCategory.class, categoryId);
         sessionFactory.getCurrentSession().delete(category);
     }
 }

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Table
 public class InvoiceDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -28,6 +27,14 @@ public class InvoiceDetail {
     private int quantity;
 
     public InvoiceDetail() { }
+
+    public InvoiceDetail(int id, @NotNull Invoice invoice, @NotNull Product product, @NotNull int quantity) {
+        this.id = id;
+        this.invoice = invoice;
+        this.product = product;
+        this.quantity = quantity;
+        this.price = product.getSinglePrice() * quantity;
+    }
 
     public int getId() {
         return id;
@@ -47,7 +54,10 @@ public class InvoiceDetail {
 
     public Product getProduct() { return product; }
 
-    public void setProduct(Product product) { this.product = product; }
+    public void setProduct(Product product) {
+        this.product = product;
+        this.price = product.getSinglePrice() * quantity;
+    }
 
     public int getPrice() { return price; }
 
@@ -55,5 +65,8 @@ public class InvoiceDetail {
 
     public int getQuantity() { return quantity; }
 
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+        this.price = product.getSinglePrice() * quantity;
+    }
 }

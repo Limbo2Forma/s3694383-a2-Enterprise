@@ -56,7 +56,14 @@ public class Invoice {
 
     public List<InvoiceDetail> getInvoiceDetails() { return invoiceDetails; }
 
-    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) { this.invoiceDetails = invoiceDetails; }
+    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
+        int totalPrice = 0;
+        for(InvoiceDetail detail: invoiceDetails){
+            totalPrice = totalPrice + detail.getPrice();
+        }
+        this.totalPrice = totalPrice;
+    }
 
     public Date getDate() { return date; }
 

@@ -38,7 +38,7 @@ public class DeliveryNoteController {
     @PutMapping(path = "")
     public String updateDeliveryNote(@RequestBody DeliveryNote deliveryNote){
         deliveryNoteStore.updateDeliveryNote(deliveryNote);
-        return "deleted Delivery Note and its details with id: " + deliveryNote.getId();
+        return "updated Delivery Note and its details with id: " + deliveryNote.getId();
     }
     @GetMapping(path = "/date={date}/p={page}")
     public List<DeliveryNote> getDeliveryNoteByDate(
@@ -87,7 +87,7 @@ public class DeliveryNoteController {
     @DeleteMapping(path = "/detail/{deliveryNoteDetailId}")
     public String deleteDeliveryNoteDetail(@PathVariable int deliveryNoteDetailId){
         int detailFrom = deliveryNoteStore.deleteDeliveryNoteDetail(deliveryNoteDetailId);
-        return "updated Delivery Note Detail with id: " + deliveryNoteDetailId
+        return "deleted Delivery Note Detail with id: " + deliveryNoteDetailId
                 + " from Delivery Note with id: " + detailFrom;
     }
 }

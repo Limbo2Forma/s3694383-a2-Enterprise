@@ -69,28 +69,18 @@ public class UtilitiesService {
 
     public long getQuantityUpToDate(Product product, Date date){
         Query receivingQuery = sessionFactory.getCurrentSession().createQuery(
-                "select sum(quantity) from ReceivingNoteDetail where receivingNote.date <= :date and product.id = :productId");
+                "select case when (sum(quantity) is null) then 0L else sum(quantity) end from ReceivingNoteDetail " +
+                        "where receivingNote.date <= :date and product.id = :productId");
         receivingQuery.setParameter("date", date);
         receivingQuery.setParameter("productId", product.getId());
-        long receivingQuantity = 0;
-        if (receivingQuery.getSingleResult() == null) System.out.println("receiving null ?????????????????????");
-        else {
-            receivingQuantity = (long) receivingQuery.getSingleResult();
-            System.out.println(receivingQuantity);
-        }
 
         Query deliveryQuery = sessionFactory.getCurrentSession().createQuery(
-                "select sum(quantity) from DeliveryNoteDetail where deliveryNote.date <= :date and product.id = :productId");
+                "select case when (sum(quantity) is null) then 0L else sum(quantity) end from DeliveryNoteDetail " +
+                        "where deliveryNote.date <= :date and product.id = :productId");
         deliveryQuery.setParameter("date", date);
         deliveryQuery.setParameter("productId", product.getId());
-        long deliveryQuantity = 0;
-        if (deliveryQuery.getSingleResult() == null) System.out.println("delivery null ?????????????????????");
-        else {
-            deliveryQuantity = (long) deliveryQuery.getSingleResult();
-            System.out.println(deliveryQuantity);
-        }
 
-        return receivingQuantity - deliveryQuantity;
+        return (long) receivingQuery.getSingleResult() - (long) deliveryQuery.getSingleResult();
     }
 
     public List<Inventory> getInventoriesByDate(Date date,int page){

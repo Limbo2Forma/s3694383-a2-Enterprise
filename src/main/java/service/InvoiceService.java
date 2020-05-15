@@ -37,20 +37,10 @@ public class InvoiceService {
                 .get(DeliveryNote.class, importedNoteId).getDeliveryNoteDetails();
         List<InvoiceDetail> invoiceDetailList = new ArrayList<>();
 
-        int totalPrice = 0;
 
-        for (DeliveryNoteDetail nd : noteDetails) {
-            InvoiceDetail i = new InvoiceDetail();
-            int price = nd.getProduct().getSinglePrice() * nd.getQuantity();
-            i.setProduct(nd.getProduct());
-            i.setQuantity(nd.getQuantity());
-            i.setPrice(price);
-            i.setInvoice(invoice);
-            totalPrice = totalPrice + price;
-            invoiceDetailList.add(i);
-        }
+        for (DeliveryNoteDetail nd : noteDetails)
+            invoiceDetailList.add(new InvoiceDetail(nd.getId(),invoice,nd.getProduct(),nd.getQuantity()));
 
-        invoice.setTotalPrice(totalPrice);
         invoice.setInvoiceDetails(invoiceDetailList);
         invoice.setId(importedNoteId);
 
