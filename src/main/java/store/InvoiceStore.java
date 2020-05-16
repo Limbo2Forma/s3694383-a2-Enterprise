@@ -64,4 +64,8 @@ public class InvoiceStore {
     public List<InvoiceDetail> getInvoiceDetailByInvoiceId(int invoiceId){
         return invoiceService.getInvoiceDetailByInvoiceId(invoiceId);
     }
+
+    public void updateInvoiceDetailPrice(InvoiceDetail invoiceDetail){
+        invoiceService.updateInvoiceDetailPrice(invoiceDetail);
+    }
 }

@@ -126,6 +126,7 @@ public class InvoiceService {
     public void updateInvoiceDetailPrice(InvoiceDetail invoiceDetail){
         InvoiceDetail temp = sessionFactory.getCurrentSession().get(InvoiceDetail.class, invoiceDetail.getId());
         temp.setPrice(invoiceDetail.getPrice());
+        temp.getInvoice().calculateTotalPrice();
         sessionFactory.getCurrentSession().update(temp);
     }
 }

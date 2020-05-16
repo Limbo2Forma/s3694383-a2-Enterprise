@@ -524,4 +524,25 @@ public class InvoiceControllerTest {
             }
         }
     }
+    @Nested
+    @DisplayName("updateInvoicePrice test")
+    class UpdateInvoiceDetailPrice {
+        ResultActions update() throws Exception {
+            String requestJson = "{\"id\":1,\"price\":9999}";
+            return mockMvc.perform(put("/invoices/detail/price").contentType(MediaType.APPLICATION_JSON).content(requestJson));
+        }
+
+        @Test
+        @DisplayName("Should return the HTTP status code 200")
+        void shouldReturnHttpStatusCodeOk() throws Exception {
+            update().andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("Should display updated invoice message")
+        void responseUpdateMessage() throws Exception {
+            String json = update().andReturn().getResponse().getContentAsString();
+            assertEquals("updated Invoice Detail id 1 with price: 9999", json);
+        }
+    }
 }

@@ -133,4 +133,10 @@ public class InvoiceController {
     public List<InvoiceDetail> getInvoiceDetailByInvoiceId(@PathVariable  int invoiceId){
         return invoiceStore.getInvoiceDetailByInvoiceId(invoiceId);
     }
+
+    @PutMapping(path = "/detail/price")
+    public String updateInvoiceDetailPrice(@RequestBody InvoiceDetail invoiceDetail){
+        invoiceStore.updateInvoiceDetailPrice(invoiceDetail);
+        return "updated Invoice Detail id " + invoiceDetail.getId() + " with price: " + invoiceDetail.getPrice();
+    }
 }
