@@ -36,9 +36,9 @@ public class AppConfig {
 
         dataSource.setUrl("jdbc:postgresql://localhost:5432/assignment2");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("admin");
+//        dataSource.setPassword("admin");
 
-//        dataSource.setPassword("rmit");
+        dataSource.setPassword("rmit");
 
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(properties);
