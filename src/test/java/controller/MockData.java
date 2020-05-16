@@ -49,21 +49,25 @@ public class MockData {
     static {
         try {
             // fill Order mock mvc data
-            providerOrder = new ProviderOrder(1, GlobalVar.dateFormatter.parse("28-01-2019")
-                    ,staff,provider, Arrays.asList(
+            List<ProviderOrderDetail> providerOrderDetailList = Arrays.asList(
                     new ProviderOrderDetail(productList.get(0), 100, 100),
                     new ProviderOrderDetail(productList.get(1), 11, 100),
-                    new ProviderOrderDetail(productList.get(2), 20, 100)
+                    new ProviderOrderDetail(productList.get(2), 20, 100),
+                    new ProviderOrderDetail(productList.get(2), 20, 100),
+                    new ProviderOrderDetail(productList.get(0), 100, 100),
+                    new ProviderOrderDetail(productList.get(1), 11, 100)
+            );
+            providerOrder = new ProviderOrder(1, GlobalVar.dateFormatter.parse("28-01-2019")
+                    ,staff,provider, Arrays.asList(
+                    providerOrderDetailList.get(0),providerOrderDetailList.get(1),providerOrderDetailList.get(2)
             ));
             providerOrderList = Arrays.asList(providerOrder,
                     new ProviderOrder(2, GlobalVar.dateFormatter.parse("28-01-2019")
-                            ,staff,provider, Arrays.asList(
-                            new ProviderOrderDetail(productList.get(2), 20, 100)
+                            ,staff,provider, Arrays.asList(providerOrderDetailList.get(3)
                     )),
                     new ProviderOrder(3, GlobalVar.dateFormatter.parse("28-01-2019")
                             ,staffList.get(1),provider, Arrays.asList(
-                            new ProviderOrderDetail(productList.get(0), 100, 100),
-                            new ProviderOrderDetail(productList.get(1), 11, 100)
+                            providerOrderDetailList.get(4),providerOrderDetailList.get(5)
                     ))
             );
 
@@ -71,36 +75,41 @@ public class MockData {
             receivingNote = new ReceivingNote(GlobalVar.dateFormatter.parse("28-01-2019"),staff);
             receivingNote.setId(1);
             receivingNote.setReceivingNoteDetails(Arrays.asList(
-                    new ReceivingNoteDetail(1, receivingNote,productList.get(0), 100),
-                    new ReceivingNoteDetail(2, receivingNote,productList.get(2), 11),
-                    new ReceivingNoteDetail(3, receivingNote,productList.get(1), 20)
+                    new ReceivingNoteDetail(providerOrderDetailList.get(0)),
+                    new ReceivingNoteDetail(providerOrderDetailList.get(1)),
+                    new ReceivingNoteDetail(providerOrderDetailList.get(2))
             ));
             ReceivingNote receivingNote2 = new ReceivingNote(GlobalVar.dateFormatter.parse("28-01-2019"),staff);
             receivingNote2.setId(2);
             receivingNote2.setReceivingNoteDetails(Arrays.asList(
-                    new ReceivingNoteDetail(4, receivingNote,productList.get(2), 30)
+                    new ReceivingNoteDetail(providerOrderDetailList.get(3))
             ));
             ReceivingNote receivingNote3 = new ReceivingNote(GlobalVar.dateFormatter.parse("28-01-2019"),staff);
             receivingNote3.setId(3);
             receivingNote3.setReceivingNoteDetails(Arrays.asList(
-                    new ReceivingNoteDetail(5, receivingNote,productList.get(2), 10),
-                    new ReceivingNoteDetail(6, receivingNote,productList.get(1), 11)
+                    new ReceivingNoteDetail(providerOrderDetailList.get(4)),
+                    new ReceivingNoteDetail(providerOrderDetailList.get(5))
             ));
             receivingNoteList = Arrays.asList(receivingNote, receivingNote2, receivingNote3);
 
             // fill Delivery Note mock mvc data
-            deliveryNote = new DeliveryNote(1, GlobalVar.dateFormatter.parse("28-01-2019"),staff, Arrays.asList(
+            List<DeliveryNoteDetail> deliveryNoteDetailList = Arrays.asList(
                     new DeliveryNoteDetail(productList.get(0), 100),
                     new DeliveryNoteDetail(productList.get(1), 11),
-                    new DeliveryNoteDetail(productList.get(2), 20)
+                    new DeliveryNoteDetail(productList.get(2), 20),
+                    new DeliveryNoteDetail(productList.get(2), 200),
+                    new DeliveryNoteDetail(productList.get(0), 1),
+                    new DeliveryNoteDetail(productList.get(1), 111)
+            );
+            deliveryNote = new DeliveryNote(1, GlobalVar.dateFormatter.parse("28-01-2019"),staff, Arrays.asList(
+                    deliveryNoteDetailList.get(0), deliveryNoteDetailList.get(1), deliveryNoteDetailList.get(2)
             ));
             deliveryNoteList = Arrays.asList(deliveryNote,
                     new DeliveryNote(2, GlobalVar.dateFormatter.parse("28-01-2019"),staff, Arrays.asList(
-                            new DeliveryNoteDetail(productList.get(2), 200)
+                            deliveryNoteDetailList.get(3)
                     )),
                     new DeliveryNote(3, GlobalVar.dateFormatter.parse("28-01-2019"),staffList.get(1), Arrays.asList(
-                            new DeliveryNoteDetail(productList.get(0), 1),
-                            new DeliveryNoteDetail(productList.get(1), 111)
+                            deliveryNoteDetailList.get(4), deliveryNoteDetailList.get(5)
                     ))
             );
 
@@ -108,20 +117,20 @@ public class MockData {
             invoice = new Invoice(GlobalVar.dateFormatter.parse("28-01-2019"),staff,customer);
             invoice.setId(1);
             invoice.setInvoiceDetails(Arrays.asList(
-                    new InvoiceDetail(1, invoice,productList.get(0), 100),
-                    new InvoiceDetail(2, invoice,productList.get(2), 11),
-                    new InvoiceDetail(3, invoice,productList.get(1), 20)
+                    new InvoiceDetail(deliveryNoteDetailList.get(0)),
+                    new InvoiceDetail(deliveryNoteDetailList.get(1)),
+                    new InvoiceDetail(deliveryNoteDetailList.get(2))
             ));
             Invoice invoice2 = new Invoice(GlobalVar.dateFormatter.parse("28-01-2019"),staff,customer);
             invoice2.setId(2);
             invoice2.setInvoiceDetails(Arrays.asList(
-                    new InvoiceDetail(4, invoice,productList.get(2), 30)
+                    new InvoiceDetail(deliveryNoteDetailList.get(3))
             ));
             Invoice invoice3 = new Invoice(GlobalVar.dateFormatter.parse("28-01-2019"),staff,customer);
             invoice3.setId(3);
             invoice3.setInvoiceDetails(Arrays.asList(
-                    new InvoiceDetail(5, invoice,productList.get(2), 10),
-                    new InvoiceDetail(6, invoice,productList.get(1), 11)
+                    new InvoiceDetail(deliveryNoteDetailList.get(4)),
+                    new InvoiceDetail(deliveryNoteDetailList.get(5))
             ));
             invoiceList = Arrays.asList(invoice, invoice2, invoice3);
         } catch (ParseException e) {

@@ -49,8 +49,8 @@ public class ProviderOrderService {
     public void deleteOrder(int orderId){
         ProviderOrder providerOrder = getOrderById(orderId);
         ReceivingNote receivingNote = sessionFactory.getCurrentSession().get(ReceivingNote.class, orderId);
-        sessionFactory.getCurrentSession().delete(providerOrder);
         sessionFactory.getCurrentSession().delete(receivingNote);
+        sessionFactory.getCurrentSession().delete(providerOrder);
     }
 
     public List<ProviderOrder> getOrdersByProvider(int providerId, int page){
@@ -91,31 +91,21 @@ public class ProviderOrderService {
     public int addOrderDetail(ProviderOrderDetail providerOrderDetail){
         sessionFactory.getCurrentSession().save(providerOrderDetail);
 
-        ReceivingNote note = sessionFactory.getCurrentSession()
-                .get(ReceivingNote.class, providerOrderDetail.getProviderOrder().getId());
+        ReceivingNote note = sessionFactory.getCurrentSession().get(ReceivingNote.class, providerOrderDetail.getProviderOrder().getId());
 
         if (note != null){
-            ReceivingNoteDetail noteDetail = new ReceivingNoteDetail(providerOrderDetail.getId(),note
-                    ,providerOrderDetail.getProduct(),providerOrderDetail.getQuantity());
-
-            List<ReceivingNoteDetail> noteDetailList = note.getReceivingNoteDetails();
-            noteDetailList.add(noteDetail);
-            note.setReceivingNoteDetails(noteDetailList);
+            ReceivingNoteDetail noteDetail = new ReceivingNoteDetail(providerOrderDetail);
+            noteDetail.setReceivingNote(note);
+            note.getReceivingNoteDetails().add(noteDetail);
 
             sessionFactory.getCurrentSession().update(note);
-
-            Product p = sessionFactory.getCurrentSession().get(Product.class, providerOrderDetail.getProduct().getId());
-            p.setCurrentQuantity(p.getCurrentQuantity() + providerOrderDetail.getQuantity());
-
-            sessionFactory.getCurrentSession().update(p);
         }
 
         return providerOrderDetail.getId();
     }
 
     public void updateOrderDetail(ProviderOrderDetail providerOrderDetail){
-        ProviderOrderDetail detail = sessionFactory.getCurrentSession()
-                .get(ProviderOrderDetail.class, providerOrderDetail.getId());
+        ProviderOrderDetail detail = sessionFactory.getCurrentSession().get(ProviderOrderDetail.class, providerOrderDetail.getId());
 
         detail.setPrice(providerOrderDetail.getPrice());
         detail.setProduct(providerOrderDetail.getProduct());
@@ -123,54 +113,35 @@ public class ProviderOrderService {
 
         sessionFactory.getCurrentSession().update(detail);
 
-        ReceivingNoteDetail noteDetail = sessionFactory.getCurrentSession()
-                .get(ReceivingNoteDetail.class, providerOrderDetail.getId());
+        ReceivingNoteDetail noteDetail = sessionFactory.getCurrentSession().get(ReceivingNoteDetail.class, providerOrderDetail.getId());
         if (noteDetail != null){
             Product product = noteDetail.getProduct();
             product.setCurrentQuantity(product.getCurrentQuantity() - noteDetail.getQuantity());
             sessionFactory.getCurrentSession().update(product);
 
-            noteDetail.setProduct(providerOrderDetail.getProduct());
-            noteDetail.setQuantity(providerOrderDetail.getQuantity());
+            noteDetail.setProviderOrderDetail(detail);
 
             sessionFactory.getCurrentSession().update(noteDetail);
-
-            product = noteDetail.getProduct();
-            product.setCurrentQuantity(product.getCurrentQuantity() + noteDetail.getQuantity());
-            sessionFactory.getCurrentSession().update(product);
         }
-
     }
 
     public int deleteOrderDetail(int orderDetailId){
         ProviderOrderDetail oldDetail = sessionFactory.getCurrentSession().get(ProviderOrderDetail.class, orderDetailId);
-
-        ProviderOrder order = oldDetail.getProviderOrder();
-        int detailFrom = order.getId();
-        List<ProviderOrderDetail> updatedList = order.getProviderOrderDetails();
-        updatedList.remove(oldDetail);
-        order.setProviderOrderDetails(updatedList);
-
-        ReceivingNote note = sessionFactory.getCurrentSession()
-                .get(ReceivingNote.class, oldDetail.getProviderOrder().getId());
+        ReceivingNote note = sessionFactory.getCurrentSession().get(ReceivingNote.class, oldDetail.getProviderOrder().getId());
 
         if (note != null) {
-            ReceivingNoteDetail noteDetail = sessionFactory.getCurrentSession()
-                    .get(ReceivingNoteDetail.class, orderDetailId);
+            ReceivingNoteDetail noteDetail = sessionFactory.getCurrentSession().get(ReceivingNoteDetail.class, orderDetailId);
             Product product = noteDetail.getProduct();
             product.setCurrentQuantity(product.getCurrentQuantity() - noteDetail.getQuantity());
             sessionFactory.getCurrentSession().update(product);
-
-            List<ReceivingNoteDetail> noteDetailList = note.getReceivingNoteDetails();
-            noteDetailList.remove(noteDetail);
-            note.setReceivingNoteDetails(noteDetailList);
-
+            note.getReceivingNoteDetails().remove(noteDetail);
             sessionFactory.getCurrentSession().update(note);
-            sessionFactory.getCurrentSession().delete(noteDetail);
         }
 
+        ProviderOrder order = oldDetail.getProviderOrder();
+        int detailFrom = order.getId();
+        order.getProviderOrderDetails().remove(oldDetail);
         sessionFactory.getCurrentSession().update(order);
-        sessionFactory.getCurrentSession().delete(oldDetail);
 
         return detailFrom;
     }

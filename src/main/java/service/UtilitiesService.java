@@ -135,6 +135,7 @@ public class UtilitiesService {
         prs.addProductCategory(new ProductCategory(1,"category 1"));
         prs.addProductCategory(new ProductCategory(2,"category 2 cat"));
         prs.addProductCategory(new ProductCategory(3,"category 3 ctata"));
+        System.out.println("*******CATEGORY**"+sessionFactory.getCurrentSession().getTransaction().getStatus().toString());
 
         prs.addProduct(new Product(1,"product name 1","model 1","brand 1","company 1",
                 "description 1",prs.getProductCategoryById(1),100));
@@ -172,7 +173,7 @@ public class UtilitiesService {
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(4), 70, 40)
         )));
-        os.addOrder(new ProviderOrder(5, GlobalVar.dateFormatter.parse("28-01-2020"),ss.getStaffById(4)
+        os.addOrder(new ProviderOrder(5, GlobalVar.dateFormatter.parse("28-01-2019"),ss.getStaffById(4)
                 ,ps.getProviderById(1), Arrays.asList(
                     new ProviderOrderDetail(prs.getProductById(1), 103, 200),
                     new ProviderOrderDetail(prs.getProductById(2), 11, 160),
@@ -190,7 +191,7 @@ public class UtilitiesService {
                 , ss.getStaffById(4)), 2);
         rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("01-03-2019")
                 , ss.getStaffById(3)), 5);
-        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("30-01-2020")
+        rs.addReceivingNoteWithImportedOrder(new ReceivingNote(GlobalVar.dateFormatter.parse("30-01-2019")
                 , ss.getStaffById(3)), 3);
     }
     private void populateDeliveryNote() throws Exception {
@@ -212,13 +213,14 @@ public class UtilitiesService {
         )));
         ds.addDeliveryNote(new DeliveryNote(3, GlobalVar.dateFormatter.parse("08-02-2020"),ss.getStaffById(1),
                 Arrays.asList(
-                    new DeliveryNoteDetail(prs.getProductById(3), 100),
+                    new DeliveryNoteDetail(prs.getProductById(3), 10),
                     new DeliveryNoteDetail(prs.getProductById(5), 10)
         )));
         ds.addDeliveryNote(new DeliveryNote(4, GlobalVar.dateFormatter.parse("08-03-2020"),ss.getStaffById(2),
                 Arrays.asList(
                     new DeliveryNoteDetail(prs.getProductById(1), 20)
         )));
+        System.out.println("*******DELI**"+sessionFactory.getCurrentSession().getTransaction().getStatus().toString());
     }
     private void populateInvoice() throws Exception {
         InvoiceService is = new InvoiceService();
@@ -227,7 +229,7 @@ public class UtilitiesService {
         is.addInvoiceWithImportedNote(new Invoice(GlobalVar.dateFormatter.parse("30-01-2019")
                 , ss.getStaffById(5), cs.getCustomerById(2)), 2);
         is.addInvoiceWithImportedNote(new Invoice(GlobalVar.dateFormatter.parse("30-01-2019")
-                , ss.getStaffById(4), cs.getCustomerById(1)), 3);
+                , ss.getStaffById(4), cs.getCustomerById(1)), 4);
     }
 
     public void refreshDatabase(){

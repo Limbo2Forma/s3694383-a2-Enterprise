@@ -1,11 +1,13 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import java.util.ArrayList;
@@ -21,16 +23,15 @@ public class DeliveryNote {
 
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    @NotNull
     @PastOrPresent
+    @NotNull
     private Date date;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private Staff staff;
 
-    @OneToMany(mappedBy = "deliveryNote", fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "deliveryNote", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private List<DeliveryNoteDetail> deliveryNoteDetails = new ArrayList<>();
 
@@ -56,8 +57,4 @@ public class DeliveryNote {
     public void setStaff(Staff staff) { this.staff = staff; }
 
     public List<DeliveryNoteDetail> getDeliveryNoteDetails() { return deliveryNoteDetails; }
-
-    public void setDeliveryNoteDetails(List<DeliveryNoteDetail> deliveryNoteDetails) {
-        this.deliveryNoteDetails = deliveryNoteDetails;
-    }
 }

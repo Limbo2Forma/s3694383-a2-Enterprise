@@ -33,22 +33,12 @@ public class ReceivingNoteService {
     }
 
     public int addReceivingNoteWithImportedOrder(ReceivingNote receivingNote, int importedOrderId){
-        List<ProviderOrderDetail> orderDetails = sessionFactory.getCurrentSession()
-                .get(ProviderOrder.class, importedOrderId).getProviderOrderDetails();
-        List<ReceivingNoteDetail> noteDetailList = new ArrayList<>();
+        ReceivingNote temp = new ReceivingNote(receivingNote.getDate(),receivingNote.getStaff());
+        temp.setProviderOrder(sessionFactory.getCurrentSession().get(ProviderOrder.class, importedOrderId));
 
-        for (ProviderOrderDetail od : orderDetails) {
-            ReceivingNoteDetail r = new ReceivingNoteDetail(od.getId(),receivingNote,od.getProduct(),od.getQuantity());
-            noteDetailList.add(r);
-            Product p = sessionFactory.getCurrentSession().get(Product.class, od.getProduct().getId());
-            p.setCurrentQuantity(p.getCurrentQuantity() + od.getQuantity());
-            sessionFactory.getCurrentSession().update(p);
-        }
+        for (ReceivingNoteDetail detail : temp.getReceivingNoteDetails()) detail.setReceivingNote(temp);
 
-        receivingNote.setReceivingNoteDetails(noteDetailList);
-        receivingNote.setId(importedOrderId);
-
-        sessionFactory.getCurrentSession().save(receivingNote);
+        sessionFactory.getCurrentSession().save(temp);
         return receivingNote.getId();
     }
 

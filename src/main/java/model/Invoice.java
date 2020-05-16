@@ -1,12 +1,14 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.PastOrPresent;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,13 +18,18 @@ import java.util.List;
 @Table
 public class Invoice {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @OneToOne(cascade=CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @MapsId
+    @JsonIgnore
+    @JoinColumn(name = "id")
+    private DeliveryNote deliveryNote;
+
     @Temporal(TemporalType.DATE)
-    @PastOrPresent
-    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
+    @NotNull
+    @PastOrPresent
     private Date date;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,8 +40,7 @@ public class Invoice {
     @NotNull
     private Customer customer;
 
-    @OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private List<InvoiceDetail> invoiceDetails = new ArrayList<>();
 
@@ -56,14 +62,7 @@ public class Invoice {
 
     public List<InvoiceDetail> getInvoiceDetails() { return invoiceDetails; }
 
-    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) {
-        this.invoiceDetails = invoiceDetails;
-        int totalPrice = 0;
-        for(InvoiceDetail detail: invoiceDetails){
-            totalPrice = totalPrice + detail.getPrice();
-        }
-        this.totalPrice = totalPrice;
-    }
+    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) { this.invoiceDetails = invoiceDetails; }
 
     public Date getDate() { return date; }
 
@@ -80,4 +79,19 @@ public class Invoice {
     public long getTotalPrice() { return totalPrice; }
 
     public void setTotalPrice(long totalPrice) { this.totalPrice = totalPrice; }
+
+    public void calculateTotalPrice(){
+        int totalPrice = 0;
+        for(InvoiceDetail detail: invoiceDetails){
+            totalPrice = totalPrice + detail.getPrice();
+        }
+        this.totalPrice = totalPrice;
+    }
+
+    public void setDeliveryNote(DeliveryNote deliveryNote) {
+        this.deliveryNote = deliveryNote;
+        for (DeliveryNoteDetail nd : deliveryNote.getDeliveryNoteDetails())
+            invoiceDetails.add(new InvoiceDetail(nd));
+        calculateTotalPrice();
+    }
 }

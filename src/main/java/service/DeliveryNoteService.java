@@ -39,18 +39,13 @@ public class DeliveryNoteService {
         sessionFactory.getCurrentSession().update(product);
     }
 
-    public int addDeliveryNote(DeliveryNote deliveryNote){
-        try {
-            for (DeliveryNoteDetail r : deliveryNote.getDeliveryNoteDetails()) {
-                checkProductQuantity(r);
-                r.setDeliveryNote(deliveryNote);
-            }
-            sessionFactory.getCurrentSession().save(deliveryNote);
-            return deliveryNote.getId();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public int addDeliveryNote(DeliveryNote deliveryNote) throws Exception {
+        for (DeliveryNoteDetail r : deliveryNote.getDeliveryNoteDetails()) {
+            checkProductQuantity(r);
+            r.setDeliveryNote(deliveryNote);
         }
-        return -1;
+        sessionFactory.getCurrentSession().save(deliveryNote);
+        return deliveryNote.getId();
     }
 
     public void updateDeliveryNote(DeliveryNote deliveryNote){
@@ -63,8 +58,8 @@ public class DeliveryNoteService {
     public void deleteDeliveryNote(int deliveryNoteId){
         DeliveryNote deliveryNote = getDeliveryNoteById(deliveryNoteId);
         Invoice invoice = sessionFactory.getCurrentSession().get(Invoice.class, deliveryNoteId);
-        sessionFactory.getCurrentSession().delete(deliveryNote);
         sessionFactory.getCurrentSession().delete(invoice);
+        sessionFactory.getCurrentSession().delete(deliveryNote);
     }
 
     public List<DeliveryNote> getDeliveryNotesByDate(Date date, int page){
@@ -92,81 +87,48 @@ public class DeliveryNoteService {
         return query.list();
     }
 
-    public int addDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail){
-        try {
-            checkProductQuantity(deliveryNoteDetail);
+    public int addDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail) throws Exception {
+        checkProductQuantity(deliveryNoteDetail);
 
-            sessionFactory.getCurrentSession().save(deliveryNoteDetail);
-
-            Invoice invoice = sessionFactory.getCurrentSession()
-                    .get(Invoice.class, deliveryNoteDetail.getDeliveryNote().getId());
-
-            if (invoice != null){
-
-                InvoiceDetail invoiceDetail = new InvoiceDetail(deliveryNoteDetail.getId(),invoice
-                        ,deliveryNoteDetail.getProduct(),deliveryNoteDetail.getQuantity());
-
-                List<InvoiceDetail> detailList = invoice.getInvoiceDetails();
-                detailList.add(invoiceDetail);
-                invoice.setInvoiceDetails(detailList);
-
-                sessionFactory.getCurrentSession().update(invoice);
-
-                return deliveryNoteDetail.getId();
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-
-        return -1;
+        sessionFactory.getCurrentSession().save(deliveryNoteDetail);
+        Invoice invoice = sessionFactory.getCurrentSession().get(Invoice.class, deliveryNoteDetail.getDeliveryNote().getId());
+        if (invoice != null){
+            InvoiceDetail invoiceDetail = new InvoiceDetail(deliveryNoteDetail);
+            invoiceDetail.setInvoice(invoice);
+            invoice.getInvoiceDetails().add(invoiceDetail);
+            invoice.calculateTotalPrice();
+            sessionFactory.getCurrentSession().update(invoice);
+        }
+        return deliveryNoteDetail.getId();
     }
 
-    public void updateDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail){
-        try {
-            DeliveryNoteDetail note = sessionFactory.getCurrentSession()
-                    .get(DeliveryNoteDetail.class, deliveryNoteDetail.getId());
-            Product product = note.getProduct();
-            product.setCurrentQuantity(product.getCurrentQuantity() - note.getQuantity());
+    public void updateDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail) throws Exception{
+        DeliveryNoteDetail note = sessionFactory.getCurrentSession().get(DeliveryNoteDetail.class, deliveryNoteDetail.getId());
+        Product product = note.getProduct();
+        product.setCurrentQuantity(product.getCurrentQuantity() - note.getQuantity());
 
-            note.setProduct(deliveryNoteDetail.getProduct());
-            note.setQuantity(deliveryNoteDetail.getQuantity());
-            checkProductQuantity(note);
+        note.setProduct(deliveryNoteDetail.getProduct());
+        note.setQuantity(deliveryNoteDetail.getQuantity());
+        checkProductQuantity(note);
 
-            sessionFactory.getCurrentSession().update(note);
+        sessionFactory.getCurrentSession().update(note);
 
-            InvoiceDetail invoiceDetail = sessionFactory.getCurrentSession()
-                    .get(InvoiceDetail.class, deliveryNoteDetail.getId());
-            if (invoiceDetail != null){
-                Invoice updatedInvoice = invoiceDetail.getInvoice();
-                updatedInvoice.setTotalPrice(updatedInvoice.getTotalPrice() - invoiceDetail.getPrice());
-
-                invoiceDetail.setProduct(deliveryNoteDetail.getProduct());
-                invoiceDetail.setQuantity(deliveryNoteDetail.getQuantity());
-
-                updatedInvoice.setTotalPrice(updatedInvoice.getTotalPrice() + invoiceDetail.getPrice());
-
-                sessionFactory.getCurrentSession().update(invoiceDetail);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+        InvoiceDetail invoiceDetail = sessionFactory.getCurrentSession().get(InvoiceDetail.class, deliveryNoteDetail.getId());
+        if (invoiceDetail != null){
+            Invoice updatedInvoice = invoiceDetail.getInvoice();
+            invoiceDetail.setDeliveryNoteDetail(note);
+            updatedInvoice.calculateTotalPrice();
+            sessionFactory.getCurrentSession().update(invoiceDetail);
         }
     }
 
     public int deleteDeliveryNoteDetail(int deliveryNoteDetailId){
-
         DeliveryNoteDetail detail = sessionFactory.getCurrentSession().get(DeliveryNoteDetail.class, deliveryNoteDetailId);
-
-        Invoice invoice = sessionFactory.getCurrentSession()
-                .get(Invoice.class, detail.getDeliveryNote().getId());
-
+        Invoice invoice = sessionFactory.getCurrentSession().get(Invoice.class, detail.getDeliveryNote().getId());
         if (invoice != null) {
-            InvoiceDetail invoiceDetail = sessionFactory.getCurrentSession()
-                    .get(InvoiceDetail.class, deliveryNoteDetailId);
-            List<InvoiceDetail> invoiceDetails = invoice.getInvoiceDetails();
-
-            invoiceDetails.remove(invoiceDetail);
-            invoice.setInvoiceDetails(invoiceDetails);
-
+            InvoiceDetail invoiceDetail = sessionFactory.getCurrentSession().get(InvoiceDetail.class, deliveryNoteDetailId);
+            invoice.getInvoiceDetails().remove(invoiceDetail);
             sessionFactory.getCurrentSession().update(invoice);
-            sessionFactory.getCurrentSession().delete(invoiceDetail);
         }
 
         Product product = detail.getProduct();
@@ -175,12 +137,9 @@ public class DeliveryNoteService {
 
         DeliveryNote note = detail.getDeliveryNote();
         int detailFrom = note.getId();
-        List<DeliveryNoteDetail> updatedList = note.getDeliveryNoteDetails();
-        updatedList.remove(detail);
-        note.setDeliveryNoteDetails(updatedList);
+        note.getDeliveryNoteDetails().remove(detail);
 
         sessionFactory.getCurrentSession().update(note);
-        sessionFactory.getCurrentSession().delete(detail);
 
         return detailFrom;
     }

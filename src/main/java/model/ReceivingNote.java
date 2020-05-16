@@ -1,6 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -18,6 +19,12 @@ public class ReceivingNote {
     @Id
     private int id;
 
+    @OneToOne(cascade=CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @MapsId
+    @JsonIgnore
+    @JoinColumn(name = "id")
+    private ProviderOrder providerOrder;
+
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd-MM-yyyy")
     @NotNull
@@ -28,8 +35,7 @@ public class ReceivingNote {
     @NotNull
     private Staff staff;
 
-    @OneToMany(mappedBy = "receivingNote", fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "receivingNote", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private List<ReceivingNoteDetail> receivingNoteDetails = new ArrayList<>();
 
@@ -50,6 +56,10 @@ public class ReceivingNote {
         return receivingNoteDetails;
     }
 
+    public void setReceivingNoteDetails(List<ReceivingNoteDetail> receivingNoteDetails) {
+        this.receivingNoteDetails = receivingNoteDetails;
+    }
+
     public Date getDate() { return date; }
 
     public void setDate(Date date) { this.date = date; }
@@ -58,7 +68,10 @@ public class ReceivingNote {
 
     public void setStaff(Staff staff) { this.staff = staff; }
 
-    public void setReceivingNoteDetails(List<ReceivingNoteDetail> receivingNoteDetails) {
-        this.receivingNoteDetails = receivingNoteDetails;
+    public void setProviderOrder(ProviderOrder providerOrder) {
+        this.providerOrder = providerOrder;
+        for (ProviderOrderDetail od : providerOrder.getProviderOrderDetails()) {
+            receivingNoteDetails.add(new ReceivingNoteDetail(od));
+        }
     }
 }

@@ -12,6 +12,12 @@ public class InvoiceDetail {
     @Id
     private int id;
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @MapsId
+    @JsonIgnore
+    @JoinColumn(name = "id")
+    private DeliveryNoteDetail deliveryNoteDetail;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private Invoice invoice;
@@ -28,11 +34,10 @@ public class InvoiceDetail {
 
     public InvoiceDetail() { }
 
-    public InvoiceDetail(int id, @NotNull Invoice invoice, @NotNull Product product, @NotNull int quantity) {
-        this.id = id;
-        this.invoice = invoice;
-        this.product = product;
-        this.quantity = quantity;
+    public InvoiceDetail(DeliveryNoteDetail deliveryNoteDetail) {
+        this.deliveryNoteDetail = deliveryNoteDetail;
+        this.product = deliveryNoteDetail.getProduct();
+        this.quantity = deliveryNoteDetail.getQuantity();
         this.price = product.getSinglePrice() * quantity;
     }
 
@@ -43,9 +48,7 @@ public class InvoiceDetail {
     public void setId(int id) { this.id = id; }
 
     @JsonIgnore
-    public Invoice getInvoice() {
-        return invoice;
-    }
+    public Invoice getInvoice() { return invoice; }
 
     @JsonProperty
     public void setInvoice(Invoice invoice) {
@@ -54,19 +57,16 @@ public class InvoiceDetail {
 
     public Product getProduct() { return product; }
 
-    public void setProduct(Product product) {
-        this.product = product;
-        this.price = product.getSinglePrice() * quantity;
-    }
+    public void setProduct(Product product) { this.product = product; }
 
     public int getPrice() { return price; }
 
     public void setPrice(int price) { this.price = price; }
 
-    public int getQuantity() { return quantity; }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail){
+        this.deliveryNoteDetail = deliveryNoteDetail;
+        this.product = deliveryNoteDetail.getProduct();
+        this.quantity = deliveryNoteDetail.getQuantity();
         this.price = product.getSinglePrice() * quantity;
     }
 }

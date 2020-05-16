@@ -33,8 +33,7 @@ public class ProviderOrder {
     @NotNull
     private Provider provider;
 
-    @OneToMany(mappedBy = "providerOrder", fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "providerOrder", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
     private List<ProviderOrderDetail> providerOrderDetails = new ArrayList<>();
 

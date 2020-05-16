@@ -27,7 +27,7 @@ public class DeliveryNoteStore {
         return deliveryNoteService.getDeliveryNoteById(deliveryNoteId);
     }
 
-    public int addDeliveryNote(DeliveryNote deliveryNote){
+    public int addDeliveryNote(DeliveryNote deliveryNote) throws Exception{
         return deliveryNoteService.addDeliveryNote(deliveryNote);
     }
 
@@ -51,11 +51,11 @@ public class DeliveryNoteStore {
         return deliveryNoteService.getDeliveryNoteDetailByDeliveryNoteId(deliveryNoteId);
     }
 
-    public int addDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail){
+    public int addDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail) throws Exception{
         return deliveryNoteService.addDeliveryNoteDetail(deliveryNoteDetail);
     }
 
-    public void updateDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail){
+    public void updateDeliveryNoteDetail(DeliveryNoteDetail deliveryNoteDetail) throws Exception{
         deliveryNoteService.updateDeliveryNoteDetail(deliveryNoteDetail);
     }
 

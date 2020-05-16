@@ -12,6 +12,12 @@ public class ReceivingNoteDetail {
     @Id
     private int id;
 
+    @OneToOne(cascade=CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @MapsId
+    @JsonIgnore
+    @JoinColumn(name = "id")
+    private ProviderOrderDetail providerOrderDetail;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private ReceivingNote receivingNote;
@@ -25,11 +31,11 @@ public class ReceivingNoteDetail {
 
     public ReceivingNoteDetail() { }
 
-    public ReceivingNoteDetail(int id, @NotNull ReceivingNote receivingNote, @NotNull Product product, @NotNull int quantity) {
-        this.id = id;
-        this.receivingNote = receivingNote;
-        this.product = product;
-        this.quantity = quantity;
+    public ReceivingNoteDetail(ProviderOrderDetail providerOrderDetail) {
+        this.providerOrderDetail = providerOrderDetail;
+        this.product = providerOrderDetail.getProduct();
+        this.quantity = providerOrderDetail.getQuantity();
+        this.product.setCurrentQuantity(this.product.getCurrentQuantity() + this.quantity);
     }
 
     public int getId() {
@@ -58,5 +64,12 @@ public class ReceivingNoteDetail {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setProviderOrderDetail(ProviderOrderDetail providerOrderDetail) {
+        this.providerOrderDetail = providerOrderDetail;
+        this.product = providerOrderDetail.getProduct();
+        this.quantity = providerOrderDetail.getQuantity();
+        this.product.setCurrentQuantity(this.product.getCurrentQuantity() + this.quantity);
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,18 +32,11 @@ public class InvoiceService {
     }
 
     public int addInvoiceWithImportedNote(Invoice invoice, int importedNoteId){
-        List<DeliveryNoteDetail> noteDetails = sessionFactory.getCurrentSession()
-                .get(DeliveryNote.class, importedNoteId).getDeliveryNoteDetails();
-        List<InvoiceDetail> invoiceDetailList = new ArrayList<>();
+        Invoice temp = new Invoice(invoice.getDate(),invoice.getStaff(),invoice.getCustomer());
+        temp.setDeliveryNote(sessionFactory.getCurrentSession().get(DeliveryNote.class, importedNoteId));
 
-
-        for (DeliveryNoteDetail nd : noteDetails)
-            invoiceDetailList.add(new InvoiceDetail(nd.getId(),invoice,nd.getProduct(),nd.getQuantity()));
-
-        invoice.setInvoiceDetails(invoiceDetailList);
-        invoice.setId(importedNoteId);
-
-        sessionFactory.getCurrentSession().save(invoice);
+        for (InvoiceDetail detail : temp.getInvoiceDetails()) detail.setInvoice(temp);
+        sessionFactory.getCurrentSession().save(temp);
         return invoice.getId();
     }
 
@@ -129,5 +121,11 @@ public class InvoiceService {
                 "from InvoiceDetail as p where p.invoice.id =:invoiceId");
         query.setParameter("invoiceId",invoiceId);
         return query.list();
+    }
+
+    public void updateInvoiceDetailPrice(InvoiceDetail invoiceDetail){
+        InvoiceDetail temp = sessionFactory.getCurrentSession().get(InvoiceDetail.class, invoiceDetail.getId());
+        temp.setPrice(invoiceDetail.getPrice());
+        sessionFactory.getCurrentSession().update(temp);
     }
 }

@@ -28,7 +28,7 @@ public class DeliveryNoteController {
     public DeliveryNote getDeliveryNoteById(@PathVariable int deliveryNoteId){ return deliveryNoteStore.getDeliveryNoteById(deliveryNoteId); }
 
     @PostMapping(path = "")
-    public int addDeliveryNote(@RequestBody DeliveryNote deliveryNote){ return deliveryNoteStore.addDeliveryNote(deliveryNote); }
+    public int addDeliveryNote(@RequestBody DeliveryNote deliveryNote) throws Exception{ return deliveryNoteStore.addDeliveryNote(deliveryNote); }
 
     @DeleteMapping(path = "/{deliveryNoteId}")
     public String deleteDeliveryNote(@PathVariable int deliveryNoteId){
@@ -73,12 +73,12 @@ public class DeliveryNoteController {
     }
 
     @PostMapping(path = "/detail")
-    public int addDeliveryNoteDetail(@RequestBody DeliveryNoteDetail providerDeliveryNoteDetail){
+    public int addDeliveryNoteDetail(@RequestBody DeliveryNoteDetail providerDeliveryNoteDetail) throws Exception{
         return deliveryNoteStore.addDeliveryNoteDetail(providerDeliveryNoteDetail);
     }
 
     @PutMapping(path = "/detail")
-    public String updateDeliveryNoteDetail(@RequestBody DeliveryNoteDetail providerDeliveryNoteDetail){
+    public String updateDeliveryNoteDetail(@RequestBody DeliveryNoteDetail providerDeliveryNoteDetail) throws Exception{
         deliveryNoteStore.updateDeliveryNoteDetail(providerDeliveryNoteDetail);
         return "updated Delivery Note Detail with id: " + providerDeliveryNoteDetail.getId()
                 + " from Delivery Note with id: " + providerDeliveryNoteDetail.getDeliveryNote().getId();
